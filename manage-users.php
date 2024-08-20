@@ -7,12 +7,18 @@ if (!isset($_SESSION["login"])) {
   exit;
 }
 
+if($_SESSION['is_admin'] != true){
+    header("Location: index.php");
+    exit;
+}
+
 
     include "koneksi.php";
     $id_user = $_SESSION["id_user"];
 
     $nama = $_SESSION["nama"];
     $level = $_SESSION['is_admin'];
+
 
 ?>
 

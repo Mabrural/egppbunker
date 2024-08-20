@@ -8,6 +8,6 @@
         <!-- You can delete the links only if you purchased the pro version. -->
         <!-- Licensing information: https://bootstrapmade.com/license/ -->
         <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-        Developed by <a href="https://www.instagram.com/mabruralmutaqi/">Muhammad Mabrur Al Mutaqi</a>
+        Developed by <a href="https://www.instagram.com/mabruralmutaqi/" target="_blank">Muhammad Mabrur Al Mutaqi</a>
     </div>
 </footer><!-- End Footer -->

@@ -31,7 +31,7 @@ if (isset($_POST['login'])) {
       $_SESSION["is_admin"] = $row["is_admin"];
 
       // Mengarahkan berdasarkan level pengguna
-      echo '<link rel="stylesheet" href="css/app.css"></script>';
+      echo '<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"></script>';
       echo '<link rel="stylesheet" href="./sweetalert2.min.css"></script>';
       echo '<script src="./sweetalert2.min.js"></script>';
       echo "<script>

@@ -183,9 +183,9 @@
   <li class="nav-heading">Pages</li>
 
   <li class="nav-item">
-    <a class="nav-link collapsed" href="users-profile.html">
-      <i class="bi bi-person"></i>
-      <span>Profile</span>
+    <a class="nav-link collapsed" href="manage-users.php">
+      <i class="bi bi-people"></i>
+      <span>Manage Users</span>
     </a>
   </li><!-- End Profile Page Nav -->
 

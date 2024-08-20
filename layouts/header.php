@@ -41,9 +41,9 @@
         </li>
 
         <li>
-          <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-            <i class="bi bi-gear"></i>
-            <span>Account Settings</span>
+          <a class="dropdown-item d-flex align-items-center" href="change-password.php?id_user=<?= $id_user?>">
+            <i class="bi bi-key"></i>
+            <span>Change Password</span>
           </a>
         </li>
         <li>

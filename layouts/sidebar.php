@@ -23,7 +23,7 @@
   <?php endif; ?>
 
   <li class="nav-item">
-    <a class="nav-link collapsed" href="manage-delivery-order.php">
+    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'manage-delivery-order.php' || basename($_SERVER['PHP_SELF']) == 'tambah-delivery.php' || basename($_SERVER['PHP_SELF']) == 'edit-delivery.php' ? '' : 'collapsed'?>" href="manage-delivery-order.php">
       <i class="bi bi-truck"></i>
       <span>Delivery Order</span>
     </a>

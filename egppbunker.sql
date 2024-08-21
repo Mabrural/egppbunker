@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 20, 2024 at 12:33 PM
+-- Generation Time: Aug 21, 2024 at 12:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,6 +55,7 @@ CREATE TABLE `delivery_order` (
   `product` varchar(60) NOT NULL,
   `armada` varchar(60) NOT NULL,
   `quantity` varchar(12) NOT NULL,
+  `driver` varchar(50) DEFAULT NULL,
   `departure_time` varchar(30) DEFAULT NULL,
   `arrival_time` varchar(30) DEFAULT NULL,
   `loading_port` varchar(50) NOT NULL,
@@ -69,8 +70,8 @@ CREATE TABLE `delivery_order` (
 -- Dumping data for table `delivery_order`
 --
 
-INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
-(1, '19/H1/V/00095-3', '001/DO-GPP/VIII/2024', '2024-08-20', 1, 'Biosolar', 'TK. Selaras 01', '450.000', NULL, NULL, 'Surabaya', 'TG Wangi, Banyuwangi', NULL, NULL, NULL, NULL);
+INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `driver`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
+(1, '19/H1/V/00095-3', '001/DO-GPP/VIII/2024', NULL, 1, 'Biosolar', 'TK. Selaras 01', '450.000', NULL, NULL, NULL, 'Surabaya', 'TG Wangi, Banyuwangi', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 

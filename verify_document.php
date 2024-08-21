@@ -13,6 +13,7 @@ $id_do = isset($_GET['id_do']) ? intval($_GET['id_do']) : 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document Verification</title>
+    <link href="assets/img/favicon-gpp.png" rel="icon">
     <style>
         /* CSS langsung di dalam file PHP */
 

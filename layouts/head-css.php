@@ -28,6 +28,7 @@
 
   <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
 
+
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/

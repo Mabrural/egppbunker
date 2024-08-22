@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 21, 2024 at 12:37 PM
+-- Generation Time: Aug 22, 2024 at 12:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,8 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`id_customer`, `customer_name`, `address`) VALUES
-(1, 'PT HANSWAY INDONESIA', 'Jl. Duyung, Komp. Citra Super Mall Blok B No. 5-6 Harbour Bay - Batu Ampar, Batam 29432 Indonesia');
+(1, 'PT HANSWAY INDONESIA', 'Jl. Duyung, Komp. Citra Super Mall Blok B No. 5-6 Harbour Bay - Batu Ampar, Batam 29432 Indonesia'),
+(2, 'PT MITO INDONESIA', 'Jl. Pegangsaan Timur No. 56, Jakarta Timur');
 
 -- --------------------------------------------------------
 
@@ -71,7 +72,8 @@ CREATE TABLE `delivery_order` (
 --
 
 INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `driver`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
-(1, '19/H1/V/00095-3', '001/DO-GPP/VIII/2024', NULL, 1, 'Biosolar', 'TK. Selaras 01', '450.000', NULL, NULL, NULL, 'Surabaya', 'TG Wangi, Banyuwangi', NULL, NULL, NULL, NULL);
+(6, '001/PO-GPP-2024', '001/DO-GPP/VIII/2024', '2024-08-22', 1, 'Biosolar', 'TK Selaras 01', '2.000.000', '', '', '', 'Batam', 'Port B', '', '', '', ''),
+(7, '002/PO-GPP-2024', '002/DO-GPP/VIII/2024', NULL, 1, 'Pertadex', 'TB. Tiga Permata', '1000', '', '', '', 'Port A', 'Port B', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -111,6 +113,7 @@ ALTER TABLE `customer`
 --
 ALTER TABLE `delivery_order`
   ADD PRIMARY KEY (`id_do`),
+  ADD UNIQUE KEY `po_number` (`po_number`,`do_number`),
   ADD KEY `customer_id` (`customer_id`);
 
 --
@@ -128,13 +131,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`

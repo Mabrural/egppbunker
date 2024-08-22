@@ -251,31 +251,113 @@ function removeAdmin($id_user) {
     return mysqli_affected_rows($koneksi);
 }
 
-function tambahDelivery($data) {
-	global $koneksi;
-	$po_number = htmlspecialchars($data["po_number"]);
-	$do_number = htmlspecialchars($data["do_number"]);
-	$do_date = htmlspecialchars($data["do_date"]);
-	$customer_id = htmlspecialchars($data["customer_id"]);
-	$product = htmlspecialchars($data["product"]);
-	$armada = htmlspecialchars($data["armada"]);
-	$quantity = htmlspecialchars($data["quantity"]);
-	$driver = htmlspecialchars($data["driver"]);
-	$departure_time = htmlspecialchars($data["departure_time"]);
-	$arrival_time = htmlspecialchars($data["arrival_time"]);
-	$loading_port = htmlspecialchars($data["loading_port"]);
-	$discharging_port = htmlspecialchars($data["discharging_port"]);
-	$commence_pump = htmlspecialchars($data["commence_pump"]);
-	$finished_pump = htmlspecialchars($data["finished_pump"]);
-	$seal_number1 = htmlspecialchars($data["seal_number1"]);
-	$seal_number2 = htmlspecialchars($data["seal_number2"]);
+function generateDoNumber() {
+    global $koneksi;
 
-	$query = "INSERT INTO delivery_order VALUES
-			('', '$po_number', '$do_number', '$do_date', '$customer_id', '$product', '$armada', '$quantity', '$driver', '$departure_time', '$arrival_time', '$loading_port', '$discharging_port', '$commence_pump', '$finished_pump', '$seal_number1', '$seal_number2')";
-	mysqli_query($koneksi, $query);
+    // Ambil nomor urut terakhir
+    $query = "SELECT do_number FROM delivery_order ORDER BY id_do DESC LIMIT 1";
+    $result = mysqli_query($koneksi, $query);
+    $last_do_number = mysqli_fetch_assoc($result)['do_number'];
 
-	return mysqli_affected_rows($koneksi);
+    // Ekstrak nomor urut terakhir dan tambahkan 1
+    $last_number = $last_do_number ? (int)explode('/', $last_do_number)[0] : 0;
+    $new_number = str_pad($last_number + 1, 3, '0', STR_PAD_LEFT);
+
+    // Dapatkan bulan dalam format Romawi
+    $month = date('n'); // Bulan dalam format numerik
+    $month_romawi = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+    $current_month_romawi = $month_romawi[$month - 1];
+
+    // Dapatkan tahun saat ini
+    $year = date('Y');
+
+    // Format nomor DO
+    return "{$new_number}/DO-GPP/{$current_month_romawi}/{$year}";
 }
+
+
+function tambahDelivery($data) {
+    global $koneksi;
+    $po_number = htmlspecialchars($data["po_number"]);
+    $do_number = htmlspecialchars($data["do_number"]);
+    $do_date = !empty($data["do_date"]) ? htmlspecialchars($data["do_date"]) : NULL; // Set to NULL if empty
+    $customer_id = htmlspecialchars($data["customer_id"]);
+    $product = htmlspecialchars($data["product"]);
+    $armada = htmlspecialchars($data["armada"]);
+    $quantity = htmlspecialchars($data["quantity"]);
+    $driver = htmlspecialchars($data["driver"]);
+    $departure_time = htmlspecialchars($data["departure_time"]);
+    $arrival_time = htmlspecialchars($data["arrival_time"]);
+    $loading_port = htmlspecialchars($data["loading_port"]);
+    $discharging_port = htmlspecialchars($data["discharging_port"]);
+    $commence_pump = htmlspecialchars($data["commence_pump"]);
+    $finished_pump = htmlspecialchars($data["finished_pump"]);
+    $seal_number1 = htmlspecialchars($data["seal_number1"]);
+    $seal_number2 = htmlspecialchars($data["seal_number2"]);
+
+    $query = "INSERT INTO delivery_order (
+        po_number, do_number, do_date, customer_id, product, armada, quantity, driver, 
+        departure_time, arrival_time, loading_port, discharging_port, commence_pump, 
+        finished_pump, seal_number1, seal_number2
+    ) VALUES (
+        '$po_number', '$do_number', " . ($do_date === NULL ? "NULL" : "'$do_date'") . ", 
+        '$customer_id', '$product', '$armada', '$quantity', '$driver', 
+        '$departure_time', '$arrival_time', '$loading_port', '$discharging_port', 
+        '$commence_pump', '$finished_pump', '$seal_number1', '$seal_number2'
+    )";
+    
+    mysqli_query($koneksi, $query);
+
+    return mysqli_affected_rows($koneksi);
+}
+
+
+function editDelivery($data) {
+    global $koneksi;
+    $id_do = $data["id_do"];
+    $po_number = htmlspecialchars($data["po_number"]);
+    $do_number = htmlspecialchars($data["do_number"]);
+    $do_date = !empty($data["do_date"]) ? htmlspecialchars($data["do_date"]) : NULL; // Set to NULL if empty
+    $customer_id = htmlspecialchars($data["customer_id"]);
+    $product = htmlspecialchars($data["product"]);
+    $armada = htmlspecialchars($data["armada"]);
+    $quantity = htmlspecialchars($data["quantity"]);
+    $driver = htmlspecialchars($data["driver"]);
+    $departure_time = htmlspecialchars($data["departure_time"]);
+    $arrival_time = htmlspecialchars($data["arrival_time"]);
+    $loading_port = htmlspecialchars($data["loading_port"]);
+    $discharging_port = htmlspecialchars($data["discharging_port"]);
+    $commence_pump = htmlspecialchars($data["commence_pump"]);
+    $finished_pump = htmlspecialchars($data["finished_pump"]);
+    $seal_number1 = htmlspecialchars($data["seal_number1"]);
+    $seal_number2 = htmlspecialchars($data["seal_number2"]);
+
+    // Update data delivery_order di database
+    $query = "UPDATE delivery_order SET
+                po_number = '$po_number',
+                do_number = '$do_number',
+                do_date = " . ($do_date === NULL ? "NULL" : "'$do_date'") . ",
+                customer_id = '$customer_id',
+                product = '$product',
+                armada = '$armada',
+                quantity = '$quantity',
+                driver = '$driver',
+                departure_time = '$departure_time',
+                arrival_time = '$arrival_time',
+                loading_port = '$loading_port',
+                discharging_port = '$discharging_port',
+                commence_pump = '$commence_pump',
+                finished_pump = '$finished_pump',
+                seal_number1 = '$seal_number1',
+                seal_number2 = '$seal_number2'
+              WHERE id_do = $id_do";
+
+    mysqli_query($koneksi, $query);
+
+    return mysqli_affected_rows($koneksi);
+}
+
+
 
 function removeDelivery($id_do) {
 	global $koneksi;

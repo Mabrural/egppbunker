@@ -51,7 +51,7 @@ if($_SESSION['is_admin'] != true){
       </nav>
     </div><!-- End Page Title -->
 
-    <a href="tambah-user.php" class="btn btn-primary btn-sm mb-2"><i class="fa fa-plus"></i> Add</a>
+    <a href="tambah-user.php" class="btn btn-primary btn-sm mb-2"><i class="fa fa-plus fa-sm"></i> Add</a>
 
     <section class="section">
       <div class="row">

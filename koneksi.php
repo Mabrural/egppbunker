@@ -251,6 +251,40 @@ function removeAdmin($id_user) {
     return mysqli_affected_rows($koneksi);
 }
 
+function tambahDelivery($data) {
+	global $koneksi;
+	$po_number = htmlspecialchars($data["po_number"]);
+	$do_number = htmlspecialchars($data["do_number"]);
+	$do_date = htmlspecialchars($data["do_date"]);
+	$customer_id = htmlspecialchars($data["customer_id"]);
+	$product = htmlspecialchars($data["product"]);
+	$armada = htmlspecialchars($data["armada"]);
+	$quantity = htmlspecialchars($data["quantity"]);
+	$driver = htmlspecialchars($data["driver"]);
+	$departure_time = htmlspecialchars($data["departure_time"]);
+	$arrival_time = htmlspecialchars($data["arrival_time"]);
+	$loading_port = htmlspecialchars($data["loading_port"]);
+	$discharging_port = htmlspecialchars($data["discharging_port"]);
+	$commence_pump = htmlspecialchars($data["commence_pump"]);
+	$finished_pump = htmlspecialchars($data["finished_pump"]);
+	$seal_number1 = htmlspecialchars($data["seal_number1"]);
+	$seal_number2 = htmlspecialchars($data["seal_number2"]);
+
+	$query = "INSERT INTO delivery_order VALUES
+			('', '$po_number', '$do_number', '$do_date', '$customer_id', '$product', '$armada', '$quantity', '$driver', '$departure_time', '$arrival_time', '$loading_port', '$discharging_port', '$commence_pump', '$finished_pump', '$seal_number1', '$seal_number2')";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function removeDelivery($id_do) {
+	global $koneksi;
+	mysqli_query($koneksi, "DELETE FROM delivery_order WHERE id_do=$id_do");
+
+	return mysqli_affected_rows($koneksi);
+
+}
+
 function tambahCompany($data) {
 	global $koneksi;
 	$company_name = htmlspecialchars($data["company_name"]);

@@ -148,55 +148,41 @@ function printContent(id_do) {
             let content = '';
 
             // Bagian yang digeser ke kanan
-            const spaces = '&nbsp;';
             let rightAlignedContent = '';
-            rightAlignedContent += `<div style="margin-top:20px;">${spaces} ${(data.po_number ? data.po_number : '&nbsp;')}<br>`;
-            rightAlignedContent += `<div style="margin-top:20px;">${spaces} ${data.do_number}<br>`;
-            rightAlignedContent += `<div style="margin-top:20px;">${spaces} ${(data.do_date ? data.do_date : '&nbsp;')}<br>`;
+            rightAlignedContent += `<div style="position: absolute; top: 30px; left: 755px;">${(data.po_number ? data.po_number : '&nbsp;')}</div>`;
+            rightAlignedContent += `<div style="position: absolute; top: 95px; left: 755px;">${data.do_number}</div>`;
+            rightAlignedContent += `<div style="position: absolute; top: 158px; left: 755px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
 
             const splitAddress = data.address.match(/.{1,50}/g).join('<br>');
-            let leftAlignedContent = '<br><br><br>';
-            leftAlignedContent += `<div style="margin-left: 120px; margin-top:2px;">${data.customer_name}<br>`;
-            leftAlignedContent += `<div style="margin-top:15px;">${splitAddress}<br><br><br>`;
-            leftAlignedContent += `<div style="display: flex; margin-top: 6px;">`;
-            leftAlignedContent += `<div>${data.product}</div>`;
-            leftAlignedContent += `<div style="margin-left: 330px; text-align: left; width: 300px;">${data.armada}</div>`;
-            leftAlignedContent += `</div><br>`;
-            leftAlignedContent += `<div style="display: flex; margin-top: -8px;">`;
-            leftAlignedContent += `<div>${data.quantity}</div>`;
-            leftAlignedContent += `<div style="margin-left: 340px; text-align: left; width: 300px;">${(data.driver ? data.driver : '')}</div>`;
-            leftAlignedContent += `</div><br>`;
-            leftAlignedContent += `<div style="display: flex; margin-top: -8px;">`;
-            leftAlignedContent += `<div>${(data.departure_time ? data.departure_time : '&nbsp;')}</div>`;
-            leftAlignedContent += `<div style="margin-left: 390px; text-align: left; width: 300px;">${(data.arrival_time ? data.arrival_time : '&nbsp;')}</div>`;
-            leftAlignedContent += `</div><br>`;
-            leftAlignedContent += `<div style="display: flex; margin-top: -13px;">`;
-            leftAlignedContent += `<div>${data.loading_port}</div>`;
-            leftAlignedContent += `<div style="margin-left: 320px; text-align: left; width: 300px;">${data.discharging_port}</div>`;
-            leftAlignedContent += `</div><br>`;
-            leftAlignedContent += `<div style="display: flex; margin-top: -10px;">`;
-            leftAlignedContent += `<div>${(data.commence_pump ? data.commence_pump : '&nbsp;')}</div>`;
-            leftAlignedContent += `<div style="margin-left: 380px; text-align: left; width: 300px;">${(data.finished_pump ? data.finished_pump : '&nbsp;')}</div>`;
-            leftAlignedContent += `</div><br>`;
-            leftAlignedContent += `<div style="display: relative; margin-top: -8px;">${(data.seal_number1 ? data.seal_number1 : '&nbsp;')}<br>`;
-            leftAlignedContent += `<div style="display: relative; margin-top: 12px;">${(data.seal_number2 ? data.seal_number2 : '&nbsp;')}<br>`;
-            leftAlignedContent += `</div>`;
+            let leftAlignedContent = '';
+            leftAlignedContent += `<div style="position: absolute; top: 325px; left: 155px;">${data.customer_name}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 390px; left: 155px;">${splitAddress}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 533px; left: 155px;">${data.product}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 533px; left: 755px; width: 300px;">${data.armada}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 595px; left: 155px;">${data.quantity}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 595px; left: 755px; width: 300px;">${(data.driver ? data.driver : 'driver')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 650px; left: 155px;">${(data.departure_time ? data.departure_time : 'starttime')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 650px; left: 755px; width: 300px;">${(data.arrival_time ? data.arrival_time : 'arrivaltime')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 705px; left: 155px;">${data.loading_port}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 705px; left: 755px; width: 300px;">${data.discharging_port}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 760px; left: 155px;">${(data.commence_pump ? data.commence_pump : 'commence_pump')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 760px; left: 755px; width: 300px;">${(data.finished_pump ? data.finished_pump : 'finished_pump')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 818px; left: 155px;">${(data.seal_number1 ? data.seal_number1 : 'sealnumber1')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 873px; left: 155px;">${(data.seal_number2 ? data.seal_number2 : 'sealnumber2')}</div>`;
 
             content += rightAlignedContent + '<br>' + leftAlignedContent;
 
             // Buka jendela cetak dan tampilkan teks dengan gaya
             const printWindow = window.open('', '', 'height=800,width=1000');
             printWindow.document.write('<html><head><style>');
-            printWindow.document.write('pre { font-family: Arial, sans-serif; line-height: 1.5; text-align: justify; }');
-            printWindow.document.write('pre.right-aligned { text-align: left; padding-left: 500px; }');
-            printWindow.document.write('pre.left-aligned { text-align: left; padding-left: 0px; }');
+            printWindow.document.write('body { font-family: Arial, sans-serif; font-size:20px; line-height: 1.5; }'); // Pastikan font diatur untuk body
+            printWindow.document.write('div { text-align: justify; }');
             printWindow.document.write('</style></head><body>');
-            printWindow.document.write('<pre class="right-aligned">' + rightAlignedContent + '</pre>');
-            printWindow.document.write('<pre class="left-aligned">' + leftAlignedContent + '</pre>');
+            printWindow.document.write(content);
 
             // Menambahkan QR code untuk verifikasi
             const qrCodeUrl = 'http://localhost/egppbunker/verify_document.php?id_do=' + id_do;
-            printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 100px; right: 10px;" />');
+            printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 150px; right: 10px;" />');
 
             printWindow.document.write('</body></html>');
             printWindow.document.close();
@@ -204,6 +190,8 @@ function printContent(id_do) {
         })
         .catch(error => console.error('Error:', error));
 }
+
+
 
 </script>
 </body>

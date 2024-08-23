@@ -32,6 +32,14 @@
   <li class="nav-heading">Master</li>
 
   <li class="nav-item">
+    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'manage-customers.php' || basename($_SERVER['PHP_SELF']) == 'tambah-customer.php' || basename($_SERVER['PHP_SELF']) == 'edit-customer.php' ? '' : 'collapsed'?>" href="manage-customers.php">
+      <i class="bi bi-person-lines-fill"></i>
+      <span>Customers</span>
+    </a>
+  </li><!-- End Customers Page Nav -->
+
+
+  <li class="nav-item">
     <a class="nav-link collapsed" href="pages-faq.html">
       <i class="bi bi-question-circle"></i>
       <span>F.A.Q</span>

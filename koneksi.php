@@ -367,6 +367,46 @@ function removeDelivery($id_do) {
 
 }
 
+function tambahCustomer($data) {
+	global $koneksi;
+	$customer_name = htmlspecialchars($data["customer_name"]);
+	$address = htmlspecialchars($data["address"]);
+
+	$query = "INSERT INTO customer VALUES
+			('', '$customer_name', '$address')";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function editCustomer($data) {
+	global $koneksi;
+	$id_customer = mysqli_real_escape_string($koneksi, $data['id_customer']);
+	$customer_name = htmlspecialchars($data["customer_name"]);
+	$address = htmlspecialchars($data["address"]);
+
+	$query = "UPDATE customer SET
+				customer_name = '$customer_name',
+				address = '$address'
+			  WHERE id_customer = $id_customer
+			";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function removeCustomer($id_customer) {
+	global $koneksi;
+	try{
+		mysqli_query($koneksi, "DELETE FROM customer WHERE id_customer=$id_customer");
+	}catch(Exception $e){
+		return false;
+	}
+
+	return mysqli_affected_rows($koneksi);
+
+}
+
 function tambahCompany($data) {
 	global $koneksi;
 	$company_name = htmlspecialchars($data["company_name"]);

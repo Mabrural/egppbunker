@@ -54,71 +54,73 @@ if (!isset($_SESSION["login"])) {
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Delivery Order</h5>
+                <div class="table-responsive">
+                  <!-- Table with stripped rows -->
+                  <table class="table datatable">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>DO Number</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                        $no = 1;
+                        $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id";
+                        $tampil = mysqli_query($koneksi, $query);
+    
+                        if (mysqli_num_rows($tampil) > 0) {
+                            while ($data = mysqli_fetch_assoc($tampil)){
+                    
+                    ?>
+                      <tr>
+                        <td><?= $no++?></td>
+                        <td><?= $data['do_number']?></td>
+                        <td><?= $data['customer_name']?></td>
+                        <td><?= $data['product']?></td>
+                        <td>
+                          <!-- <a href="print-do.php?id_do=<?= $data['id_do']?>" class="btn btn-info btn-sm"><i class="fa fa-print fa-sm"></i> </a> -->
+                          <a href="#" class="btn btn-info btn-sm" onclick="printContent(<?= $data['id_do']?>);"><i class="fa fa-print fa-sm"></i> Print</a>
+                          <a href="edit-delivery.php?id_do=<?= $data['id_do']?>" class="btn btn-warning btn-sm"><i class="fa fa-pen fa-sm"></i> Edit</a>
+                          <a href="#" class="btn btn-danger btn-sm" onclick="return confirmRemove(<?= $data['id_do']?>);"><i class="fa fa-trash fa-sm"></i> Remove</a>
+                        </td>
+                      </tr>
+                      <script>
+                        function confirmRemove(id_do) {
+                            Swal.fire({
+                                title: 'Confirmation',
+                                text: 'Are you sure you want to remove?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, remove'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = 'remove-delivery.php?id_do=' + id_do;
+                                }
+                            });
+    
+                            return false;
+                        }
+                    </script>
+                    <?php 
+                        }
+                    } else {
+                    ?>
+                        <tr>
+                            <td colspan="5" class="text-center">Tidak ada data</td>
+                        </tr>
+                    <?php } ?> 
+                      
+                    </tbody>
+                  </table>
+                  <!-- End Table with stripped rows -->
 
-              <!-- Table with stripped rows -->
-              <table class="table datatable">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>DO Number</th>
-                    <th>Customer</th>
-                    <th>Product</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                <?php 
-                    $no = 1;
-                    $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id";
-                    $tampil = mysqli_query($koneksi, $query);
-
-                    if (mysqli_num_rows($tampil) > 0) {
-                        while ($data = mysqli_fetch_assoc($tampil)){
-                
-                ?>
-                  <tr>
-                    <td><?= $no++?></td>
-                    <td><?= $data['do_number']?></td>
-                    <td><?= $data['customer_name']?></td>
-                    <td><?= $data['product']?></td>
-                    <td>
-                      <!-- <a href="print-do.php?id_do=<?= $data['id_do']?>" class="btn btn-info btn-sm"><i class="fa fa-print fa-sm"></i> </a> -->
-                      <a href="#" class="btn btn-info btn-sm" onclick="printContent(<?= $data['id_do']?>);"><i class="fa fa-print fa-sm"></i> Print</a>
-                      <a href="edit-delivery.php?id_do=<?= $data['id_do']?>" class="btn btn-warning btn-sm"><i class="fa fa-pen fa-sm"></i> Edit</a>
-                      <a href="#" class="btn btn-danger btn-sm" onclick="return confirmRemove(<?= $data['id_do']?>);"><i class="fa fa-trash fa-sm"></i> Remove</a>
-                    </td>
-                  </tr>
-                  <script>
-                    function confirmRemove(id_do) {
-                        Swal.fire({
-                            title: 'Confirmation',
-                            text: 'Are you sure you want to remove?',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, remove'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = 'remove-delivery.php?id_do=' + id_do;
-                            }
-                        });
-
-                        return false;
-                    }
-                </script>
-                <?php 
-                    }
-                } else {
-                ?>
-                    <tr>
-                        <td colspan="5" class="text-center">Tidak ada data</td>
-                    </tr>
-                <?php } ?> 
-                  
-                </tbody>
-              </table>
-              <!-- End Table with stripped rows -->
+                </div>
 
             </div>
           </div>

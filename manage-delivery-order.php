@@ -149,6 +149,9 @@ function printContent(id_do) {
         .then(data => {
             let content = '';
 
+            // Format data.quantity untuk menampilkan pemisah ribuan
+            let formattedQuantity = Number(data.quantity).toLocaleString('id-ID'); // Ubah 'id-ID' sesuai dengan lokal yang Anda butuhkan
+
             // Bagian yang digeser ke kanan
             let rightAlignedContent = '';
             rightAlignedContent += `<div style="position: absolute; top: 30px; left: 755px;">${(data.po_number ? data.po_number : '&nbsp;')}</div>`;
@@ -161,7 +164,7 @@ function printContent(id_do) {
             leftAlignedContent += `<div style="position: absolute; top: 395px; left: 155px;">${splitAddress}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 540px; left: 155px;">${data.product}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 540px; left: 755px; width: 300px;">${data.armada}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 600px; left: 155px;">${data.quantity}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 600px; left: 155px;">${formattedQuantity}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 600px; left: 755px; width: 300px;">${(data.driver ? data.driver : 'driver')}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 655px; left: 155px;">${(data.departure_time ? data.departure_time : 'starttime')}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 655px; left: 755px; width: 300px;">${(data.arrival_time ? data.arrival_time : 'arrivaltime')}</div>`;

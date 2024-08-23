@@ -328,6 +328,32 @@ if (!isset($_SESSION["login"])) {
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            $(document).ready(function() {
+                                $('#quantity').on('input', function() {
+                                    // Get the input value and remove any non-digit characters
+                                    let rawValue = $(this).val().replace(/\D/g, '');
+                                    
+                                    // Save the raw value for database purposes
+                                    $(this).data('raw-value', rawValue);
+                                    
+                                    // Format the value with thousands separator for display
+                                    if (rawValue) {
+                                        let formattedValue = Number(rawValue).toLocaleString('id-ID'); // Change 'id-ID' to your locale if needed
+                                        $(this).val(formattedValue);
+                                    } else {
+                                        $(this).val('');
+                                    }
+                                });
+
+                                // Use the raw value for form submission or other purposes
+                                $('form').on('submit', function() {
+                                    let quantityField = $('#quantity');
+                                    let rawValue = quantityField.data('raw-value');
+                                    quantityField.val(rawValue); // Ensure raw value is submitted
+                                });
+                            });
+                        </script>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="mb-2">
                                 <label for="driver" class="form-label">Master / Driver </label>

@@ -369,11 +369,43 @@ if (!isset($_SESSION["login"])) {
                             <div class="mb-2">
                                 <label for="quantity" class="form-label">Quantity <span id="x">*</span></label>
                                 <div class="input-group mb-2">
-                                    <input type="text" name="quantity" id="quantity" class="form-control" aria-label="Quantity" value="<?= $delivery['quantity']?>" aria-describedby="basic-addon2">
+                                    <input type="text" name="quantity" id="quantity" class="form-control" aria-label="Quantity" value="<?= number_format($delivery['quantity'], 0, '', '.') ?>" aria-describedby="basic-addon2">
                                     <span class="input-group-text" id="basic-addon2">Liter</span>
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            $(document).ready(function() {
+                                // Format value on page load
+                                let quantityField = $('#quantity');
+                                let initialValue = quantityField.val().replace(/\D/g, ''); // Remove non-digit characters
+                    
+                                // Store raw value for form submission
+                                quantityField.data('raw-value', initialValue);
+                    
+                                $('#quantity').on('input', function() {
+                                    // Get the input value and remove any non-digit characters
+                                    let rawValue = $(this).val().replace(/\D/g, '');
+                                    
+                                    // Save the raw value for database purposes
+                                    $(this).data('raw-value', rawValue);
+                                    
+                                    // Format the value with thousands separator for display
+                                    if (rawValue) {
+                                        let formattedValue = Number(rawValue).toLocaleString('id-ID'); // Change 'id-ID' to your locale if needed
+                                        $(this).val(formattedValue);
+                                    } else {
+                                        $(this).val('');
+                                    }
+                                });
+                    
+                                // Ensure the raw value is used for form submission
+                                $('form').on('submit', function() {
+                                    let rawValue = quantityField.data('raw-value');
+                                    quantityField.val(rawValue); // Set the raw value before form submission
+                                });
+                            });
+                        </script>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="mb-2">
                                 <label for="driver" class="form-label">Master / Driver </label>

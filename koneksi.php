@@ -407,6 +407,31 @@ function removeCustomer($id_customer) {
 
 }
 
+function generateBdrNumber() {
+    global $koneksi;
+
+    // Ambil nomor urut terakhir
+    $query = "SELECT bdr_no FROM bdr ORDER BY id_bdr DESC LIMIT 1";
+    $result = mysqli_query($koneksi, $query);
+    $last_bdr_no = mysqli_fetch_assoc($result)['bdr_no'];
+
+    // Ekstrak nomor urut terakhir dan tambahkan 1
+    $last_no = $last_bdr_no ? (int)explode('/', $last_bdr_no)[0] : 0;
+    $new_no = str_pad($last_no + 1, 3, '0', STR_PAD_LEFT);
+
+    // Dapatkan bulan dalam format Romawi
+    $month = date('n'); // Bulan dalam format numerik
+    $month_romawi = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+    $current_month_romawi = $month_romawi[$month - 1];
+
+    // Dapatkan tahun saat ini
+    $year = date('Y');
+
+    // Format nomor BDR
+    return "{$new_no}/BDR-GPP/{$current_month_romawi}/{$year}";
+}
+
+
 function tambahCompany($data) {
 	global $koneksi;
 	$company_name = htmlspecialchars($data["company_name"]);

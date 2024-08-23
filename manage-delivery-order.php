@@ -69,7 +69,7 @@ if (!isset($_SESSION["login"])) {
                     <tbody>
                     <?php 
                         $no = 1;
-                        $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id";
+                        $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id ORDER BY id_do DESC";
                         $tampil = mysqli_query($koneksi, $query);
     
                         if (mysqli_num_rows($tampil) > 0) {
@@ -82,10 +82,10 @@ if (!isset($_SESSION["login"])) {
                         <td><?= $data['customer_name']?></td>
                         <td><?= $data['product']?></td>
                         <td>
-                          <!-- <a href="print-do.php?id_do=<?= $data['id_do']?>" class="btn btn-info btn-sm"><i class="fa fa-print fa-sm"></i> </a> -->
                           <a href="#" class="btn btn-info btn-sm" onclick="printContent(<?= $data['id_do']?>);"><i class="fa fa-print fa-sm"></i> Print</a>
                           <a href="edit-delivery.php?id_do=<?= $data['id_do']?>" class="btn btn-warning btn-sm"><i class="fa fa-pen fa-sm"></i> Edit</a>
                           <a href="#" class="btn btn-danger btn-sm" onclick="return confirmRemove(<?= $data['id_do']?>);"><i class="fa fa-trash fa-sm"></i> Remove</a>
+                          <a href="tambah-bdr.php?id_do=<?= $data['id_do']?>" class="btn btn-primary btn-sm"><i class="fa fa-file-alt fa-sm"></i> BDR</a>
                         </td>
                       </tr>
                       <script>

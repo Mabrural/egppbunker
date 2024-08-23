@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2024 at 12:46 PM
+-- Generation Time: Aug 23, 2024 at 12:29 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,31 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `bdr`
+--
+
+CREATE TABLE `bdr` (
+  `id_bdr` int(10) NOT NULL,
+  `do_id` int(10) NOT NULL,
+  `bdr_no` varchar(50) NOT NULL,
+  `vessel_cust` varchar(60) NOT NULL,
+  `next_port` varchar(60) DEFAULT NULL,
+  `visc` varchar(10) NOT NULL,
+  `density` varchar(10) NOT NULL,
+  `flashpoint` varchar(10) NOT NULL,
+  `sulphur` varchar(10) NOT NULL,
+  `water_content` varchar(10) NOT NULL,
+  `net_metric_ton` bigint(15) NOT NULL,
+  `vcf` varchar(10) NOT NULL,
+  `wcf` varchar(10) NOT NULL,
+  `temp` varchar(10) NOT NULL,
+  `table_52` varchar(10) NOT NULL,
+  `table_1` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `customer`
 --
 
@@ -39,7 +64,7 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`id_customer`, `customer_name`, `address`) VALUES
 (1, 'PT HANSWAY INDONESIA', 'Jl. Duyung, Komp. Citra Super Mall Blok B No. 5-6 Harbour Bay - Batu Ampar, Batam 29432 Indonesia'),
-(2, 'PT MITO INDONESIA', 'Jl. Pegangsaan Timur No. 56, Jakarta Timur');
+(4, 'PT MITO INDONESIA', 'Komp. The Centro Town House No. 20, Sukajadi');
 
 -- --------------------------------------------------------
 
@@ -55,7 +80,7 @@ CREATE TABLE `delivery_order` (
   `customer_id` int(10) NOT NULL,
   `product` varchar(60) NOT NULL,
   `armada` varchar(60) NOT NULL,
-  `quantity` varchar(12) NOT NULL,
+  `quantity` bigint(15) NOT NULL,
   `driver` varchar(50) DEFAULT NULL,
   `departure_time` varchar(30) DEFAULT NULL,
   `arrival_time` varchar(30) DEFAULT NULL,
@@ -72,8 +97,9 @@ CREATE TABLE `delivery_order` (
 --
 
 INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `driver`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
-(6, '001/PO-GPP-2024', '001/DO-GPP/VIII/2024', '2024-08-22', 1, 'Biosolar', 'TK Selaras 01', '2.000.000', '', '', '', 'Batam', 'Port B', '', '', '', ''),
-(7, '002/PO-GPP-2024', '002/DO-GPP/VIII/2024', NULL, 1, 'Pertadex', 'TB. Tiga Permata', '1000', '', '', '', 'Port A', 'Port B', '', '', '', '');
+(6, '001/PO-GPP-2024', '001/DO-GPP/VIII/2024', '2024-08-22', 1, 'Biosolar', 'TK Selaras 01', 2000000, '', '', '', 'Batam', 'Port B', '', '', '', ''),
+(7, '002/PO-GPP-2024', '002/DO-GPP/VIII/2024', NULL, 4, 'Pertadex', 'TB. Tiga Permata', 2000000, '', '', '', 'Port A', 'Port B', '', '', '', ''),
+(13, '003/PO-GPP-2024', '003/DO-GPP/VIII/2024', NULL, 1, 'Pertadex', 'Truck GPP', 450000, '', '', '', 'Port B', 'Port C', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -103,6 +129,14 @@ INSERT INTO `users` (`id_user`, `nama`, `email`, `password`, `is_admin`) VALUES
 --
 
 --
+-- Indexes for table `bdr`
+--
+ALTER TABLE `bdr`
+  ADD PRIMARY KEY (`id_bdr`),
+  ADD UNIQUE KEY `bdr_no` (`bdr_no`),
+  ADD KEY `bdr_ibfk_1` (`do_id`);
+
+--
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
@@ -114,7 +148,7 @@ ALTER TABLE `customer`
 ALTER TABLE `delivery_order`
   ADD PRIMARY KEY (`id_do`),
   ADD UNIQUE KEY `po_number` (`po_number`,`do_number`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD KEY `delivery_order_ibfk_1` (`customer_id`);
 
 --
 -- Indexes for table `users`
@@ -128,16 +162,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `bdr`
+--
+ALTER TABLE `bdr`
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -150,10 +190,16 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `bdr`
+--
+ALTER TABLE `bdr`
+  ADD CONSTRAINT `bdr_ibfk_1` FOREIGN KEY (`do_id`) REFERENCES `delivery_order` (`id_do`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  ADD CONSTRAINT `delivery_order_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id_customer`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `delivery_order_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id_customer`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

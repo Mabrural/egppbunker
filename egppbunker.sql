@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 23, 2024 at 12:29 PM
+-- Generation Time: Aug 26, 2024 at 12:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,6 +31,7 @@ CREATE TABLE `bdr` (
   `id_bdr` int(10) NOT NULL,
   `do_id` int(10) NOT NULL,
   `bdr_no` varchar(50) NOT NULL,
+  `delivered_by` varchar(50) DEFAULT NULL,
   `vessel_cust` varchar(60) NOT NULL,
   `next_port` varchar(60) DEFAULT NULL,
   `visc` varchar(10) NOT NULL,
@@ -38,7 +39,7 @@ CREATE TABLE `bdr` (
   `flashpoint` varchar(10) NOT NULL,
   `sulphur` varchar(10) NOT NULL,
   `water_content` varchar(10) NOT NULL,
-  `net_metric_ton` bigint(15) NOT NULL,
+  `net_metric_ton` varchar(15) NOT NULL,
   `vcf` varchar(10) NOT NULL,
   `wcf` varchar(10) NOT NULL,
   `temp` varchar(10) NOT NULL,
@@ -165,7 +166,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bdr`
 --
 ALTER TABLE `bdr`
-  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `customer`

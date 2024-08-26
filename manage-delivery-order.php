@@ -13,7 +13,6 @@ if (!isset($_SESSION["login"])) {
     $nama = $_SESSION["nama"];
     $level = $_SESSION['is_admin'];
 
-
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +62,7 @@ if (!isset($_SESSION["login"])) {
                         <th>DO Number</th>
                         <th>Customer</th>
                         <th>Product</th>
+                        <th>Quantity</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -74,6 +74,12 @@ if (!isset($_SESSION["login"])) {
     
                         if (mysqli_num_rows($tampil) > 0) {
                             while ($data = mysqli_fetch_assoc($tampil)){
+
+                              $id_do = $data['id_do'];
+
+                              // Cek apakah ada data di tabel bdr dengan do_id yang sama dengan id_do
+                              $bdrExists = mysqli_query($koneksi, "SELECT COUNT(*) as count FROM bdr WHERE do_id = $id_do");
+                              $bdrExists = mysqli_fetch_assoc($bdrExists)['count'] > 0;
                     
                     ?>
                       <tr>
@@ -81,11 +87,19 @@ if (!isset($_SESSION["login"])) {
                         <td><?= $data['do_number']?></td>
                         <td><?= $data['customer_name']?></td>
                         <td><?= $data['product']?></td>
+                        <td><?= number_format($data['quantity'], 0, ',', '.') ?></td>
                         <td>
                           <a href="#" class="btn btn-info btn-sm" onclick="printContent(<?= $data['id_do']?>);"><i class="fa fa-print fa-sm"></i> Print</a>
                           <a href="edit-delivery.php?id_do=<?= $data['id_do']?>" class="btn btn-warning btn-sm"><i class="fa fa-pen fa-sm"></i> Edit</a>
                           <a href="#" class="btn btn-danger btn-sm" onclick="return confirmRemove(<?= $data['id_do']?>);"><i class="fa fa-trash fa-sm"></i> Remove</a>
-                          <a href="tambah-bdr.php?id_do=<?= $data['id_do']?>" class="btn btn-primary btn-sm"><i class="fa fa-file-alt fa-sm"></i> BDR</a>
+                          <!-- <a href="tambah-bdr.php?id_do=<?= $data['id_do']?>" class="btn btn-primary btn-sm"><i class="fa fa-file-alt fa-sm"></i> BDR</a> -->
+                          <?php if (!$bdrExists): ?>
+                              <!-- Jika tidak ada data di tabel bdr, tampilkan tombol BDR -->
+                              <a href="tambah-bdr.php?id_do=<?= $id_do ?>" class="btn btn-primary btn-sm"><i class="fa fa-file-alt fa-sm"></i> BDR</a>
+                          <?php else: ?>
+                              <!-- Jika ada data di tabel bdr, tampilkan tombol View BDR -->
+                              <a href="view-bdr.php?id_do=<?= $id_do ?>" class="btn btn-secondary btn-sm"><i class="fa fa-eye fa-sm"></i> View BDR</a>
+                          <?php endif; ?>
                         </td>
                       </tr>
                       <script>

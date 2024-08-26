@@ -413,7 +413,18 @@ function generateBdrNumber() {
     // Ambil nomor urut terakhir
     $query = "SELECT bdr_no FROM bdr ORDER BY id_bdr DESC LIMIT 1";
     $result = mysqli_query($koneksi, $query);
-    $last_bdr_no = mysqli_fetch_assoc($result)['bdr_no'];
+
+    if (!$result) {
+        die('Query Error: ' . mysqli_error($koneksi)); // Tangani kesalahan query
+    }
+
+    $last_bdr_no_assoc = mysqli_fetch_assoc($result);
+
+    if ($last_bdr_no_assoc) {
+        $last_bdr_no = $last_bdr_no_assoc['bdr_no'];
+    } else {
+        $last_bdr_no = null; // Atau string kosong jika lebih sesuai
+    }
 
     // Ekstrak nomor urut terakhir dan tambahkan 1
     $last_no = $last_bdr_no ? (int)explode('/', $last_bdr_no)[0] : 0;
@@ -431,6 +442,31 @@ function generateBdrNumber() {
     return "{$new_no}/BDR-GPP/{$current_month_romawi}/{$year}";
 }
 
+function tambahBdr($data) {
+	global $koneksi;
+	$do_id = mysqli_real_escape_string($koneksi, $data['do_id']);
+	$bdr_no = mysqli_real_escape_string($koneksi, $data['bdr_no']);
+	$delivered_by = mysqli_real_escape_string($koneksi, $data['delivered_by']);
+	$vessel_cust = mysqli_real_escape_string($koneksi, $data['vessel_cust']);
+	$next_port = mysqli_real_escape_string($koneksi, $data['next_port']);
+	$visc = mysqli_real_escape_string($koneksi, $data['visc']);
+	$density = mysqli_real_escape_string($koneksi, $data['density']);
+	$flashpoint = mysqli_real_escape_string($koneksi, $data['flashpoint']);
+	$sulphur = mysqli_real_escape_string($koneksi, $data['sulphur']);
+	$water_content = mysqli_real_escape_string($koneksi, $data['water_content']);
+	$net_metric_ton = mysqli_real_escape_string($koneksi, $data['net_metric_ton']);
+	$vcf = mysqli_real_escape_string($koneksi, $data['vcf']);
+	$wcf = mysqli_real_escape_string($koneksi, $data['wcf']);
+	$temp = mysqli_real_escape_string($koneksi, $data['temp']);
+	$table_52 = mysqli_real_escape_string($koneksi, $data['table_52']);
+	$table_1 = mysqli_real_escape_string($koneksi, $data['table_1']);
+
+	$query = "INSERT INTO bdr VALUES
+			('', '$do_id', '$bdr_no', '$delivered_by', '$vessel_cust', '$next_port', '$visc', '$density', '$flashpoint', '$sulphur', '$water_content', '$net_metric_ton', '$vcf', '$wcf', '$temp', '$table_52', '$table_1')";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
 
 function tambahCompany($data) {
 	global $koneksi;

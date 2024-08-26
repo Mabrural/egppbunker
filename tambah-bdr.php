@@ -18,24 +18,21 @@ if (!isset($_SESSION["login"])) {
     $customer = query("SELECT * FROM customer");
     $delivery = query("SELECT * FROM delivery_order WHERE id_do=$id_do")[0];
 
-    // Pastikan $delivery['product'] adalah array atau string yang sesuai
-    $selectedProduct = isset($delivery['product']) ? $delivery['product'] : '';
+    $selectedProduct = $delivery['product'];
 
     // Pastikan $delivery['armada'] adalah string atau array yang sesuai
     $selectedArmada = isset($delivery['armada']) ? $delivery['armada'] : '';
 
-    // Asumsikan $delivery['loading_port'] dan $delivery['discharging_port'] adalah string atau array
-    $selectedLoadingPort = isset($delivery['loading_port']) ? $delivery['loading_port'] : '';
-    $selectedDischargingPort = isset($delivery['discharging_port']) ? $delivery['discharging_port'] : '';
+    $selectedDischargingPort = $delivery['discharging_port'];
 
     // Generate nomor bdr otomatis
     $generated_bdr_number = generateBdrNumber();
 
     // cek apakah tombol submit sudah ditekan atau belum
-    if (isset($_POST['editDelivery']) ) {
+    if (isset($_POST['tambahBdr']) ) {
 	
         // cek apakah data berhasil update atau tidak
-        if(editDelivery($_POST) > 0 ) {
+        if(tambahBdr($_POST) > 0 ) {
             echo '<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"></script>';
             echo '<link rel="stylesheet" href="./sweetalert2.min.css"></script>';
             echo '<script src="./sweetalert2.min.js"></script>';
@@ -44,7 +41,7 @@ if (!isset($_SESSION["login"])) {
                 swal.fire({
                     
                     title               : 'Success',
-                    text                : 'Delivery order successfully updated!',
+                    text                : 'BDR successfully created!',
                     icon                : 'success',
                     timer               : 2000,
                     showConfirmButton   : false
@@ -64,7 +61,7 @@ if (!isset($_SESSION["login"])) {
                 swal.fire({
                     
                     title               : 'Failed',
-                    text                : 'Failed to update delivery order!',
+                    text                : 'Failed to create BDR!',
                     icon                : 'error',
                     timer               : 2000,
                     showConfirmButton   : false
@@ -107,11 +104,11 @@ if (!isset($_SESSION["login"])) {
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Bunker Delivery Receipt</h1>
+      <h1>New Bunker Delivery Receipt</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Bunker Delivery Receipt</li>
+          <li class="breadcrumb-item active">New Bunker Delivery Receipt</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -128,7 +125,7 @@ if (!isset($_SESSION["login"])) {
                     <!-- Horizontal Form -->
                     <form action="" method="post">
 
-                        <input type="hidden" name="id_do" value="<?= $id_do?>">
+                        <input type="hidden" name="do_id" value="<?= $id_do?>">
                         <div class="mb-2">
                             <label for="bdr_no" class="form-label">BDR No <span id="x">*</span></label>
                             <input type="text" class="form-control" name="bdr_no" id="bdr_no" value="<?php echo htmlspecialchars($generated_bdr_number); ?>" readonly>
@@ -138,97 +135,81 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="discharging_port" class="form-label">Delivered at <span id="x">*</span></label>
-                                    <select name="discharging_port" id="discharging_port" class="form-select" disabled>
+                                    <select id="discharging_port" class="form-select" disabled>
                                         <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
                                     </select>
                                 </div>
                             </div>
+                            
                             <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const loadingPortSelect = document.getElementById('loading_port');
-                                    const dischargingPortSelect = document.getElementById('discharging_port');
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const dischargingPortSelect = document.getElementById('discharging_port');
                             
-                                    const selectedLoadingPort = '<?= $selectedLoadingPort ?>'; // PHP variable for selected loading port
-                                    const selectedDischargingPort = '<?= $selectedDischargingPort ?>'; // PHP variable for selected discharging port
+                                // Ambil data PHP untuk port yang sudah dipilih
+                                const selectedDischargingPort = '<?= $selectedDischargingPort ?>'; // PHP variable for selected discharging port
                             
-                                    // Fetch options from the JSON file and populate select dropdowns
-                                    fetch('ports.json')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            data.forEach(port => {
-                                                const optionLoading = document.createElement('option');
-                                                optionLoading.value = port;
-                                                optionLoading.textContent = port;
-                            
-                                                // Mark as selected if it matches the current value
-                                                if (port === selectedLoadingPort) {
-                                                    optionLoading.selected = true;
-                                                }
-                                                loadingPortSelect.appendChild(optionLoading);
-                            
-                                                const optionDischarging = document.createElement('option');
-                                                optionDischarging.value = port;
-                                                optionDischarging.textContent = port;
-                            
-                                                // Mark as selected if it matches the current value
-                                                if (port === selectedDischargingPort) {
-                                                    optionDischarging.selected = true;
-                                                }
-                                                dischargingPortSelect.appendChild(optionDischarging);
-                                            });
-                                        })
-                                        .catch(error => console.error('Error fetching port data:', error));
-                            
-                                    // Add new port to the select dropdowns and update the JSON file
-                                    document.getElementById('add_port').addEventListener('click', function() {
-                                        const newPort = document.getElementById('new_port').value.trim();
-                            
-                                        if (newPort) {
-                                            // Add new option to the select dropdowns
-                                            const optionLoading = document.createElement('option');
-                                            optionLoading.value = newPort;
-                                            optionLoading.textContent = newPort;
-                                            loadingPortSelect.appendChild(optionLoading);
-                                            loadingPortSelect.value = newPort; // Select the newly added option
-                            
+                                // Fetch options from the JSON file and populate select dropdowns
+                                fetch('ports.json')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        data.forEach(port => {
                                             const optionDischarging = document.createElement('option');
-                                            optionDischarging.value = newPort;
-                                            optionDischarging.textContent = newPort;
-                                            dischargingPortSelect.appendChild(optionDischarging);
-                                            dischargingPortSelect.value = newPort; // Select the newly added option
+                                            optionDischarging.value = port;
+                                            optionDischarging.textContent = port;
                             
-                                            // Send the new option to the server to update the JSON file
-                                            fetch('update_port.php', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({ port: newPort })
-                                            })
-                                            .then(response => response.text())
-                                            .then(data => {
-                                                console.log(data);
-                                                alert('New port added successfully!');
-                                            })
-                                            .catch(error => console.error('Error updating JSON file:', error));
-                                        } else {
-                                            alert('Please enter a valid port.');
-                                        }
-                                    });
+                                            // Mark as selected if it matches the current value from the database
+                                            if (port === selectedDischargingPort) {
+                                                optionDischarging.selected = true;
+                                            }
+                                            dischargingPortSelect.appendChild(optionDischarging);
+                                        });
+                                    })
+                                    .catch(error => console.error('Error fetching port data:', error));
+                            
+                                // Add new port to the select dropdown and update the JSON file
+                                document.getElementById('add_port').addEventListener('click', function() {
+                                    const newPort = document.getElementById('new_port').value.trim();
+                            
+                                    if (newPort) {
+                                        // Add new option to the select dropdown
+                                        const optionDischarging = document.createElement('option');
+                                        optionDischarging.value = newPort;
+                                        optionDischarging.textContent = newPort;
+                                        dischargingPortSelect.appendChild(optionDischarging);
+                                        dischargingPortSelect.value = newPort; // Select the newly added option
+                            
+                                        // Send the new option to the server to update the JSON file
+                                        fetch('update_port.php', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ port: newPort })
+                                        })
+                                        .then(response => response.text())
+                                        .then(data => {
+                                            console.log(data);
+                                            alert('New port added successfully!');
+                                        })
+                                        .catch(error => console.error('Error updating JSON file:', error));
+                                    } else {
+                                        alert('Please enter a valid port.');
+                                    }
                                 });
+                            });
                             </script>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="do_date" class="form-label">Date </label>
-                                    <input type="date" class="form-control" name="do_date" id="do_date" value="<?= $delivery['do_date']?>">
+                                    <input type="date" class="form-control" id="do_date" value="<?= $delivery['do_date']?>" disabled>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 <div class="mb-2">
-                                    <label for="discharging_port" class="form-label">Delivered by <span id="x">*</span></label>
-                                    <input type="text" class="form-control" name="vessel_name" id="vessel_name" value="">
+                                    <label for="delivered_by" class="form-label">Delivered by </label>
+                                    <input type="text" class="form-control" name="delivered_by" id="delivered_by" >
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
@@ -330,11 +311,38 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="product" class="form-label">Product <span id="x">*</span></label>
-                                    <select name="product" id="product" class="form-select" required disabled>
+                                    <select id="product" class="form-select" required disabled>
                                         <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
                                     </select>
                                 </div>
                             </div>
+                            
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const productSelect = document.getElementById('product');
+                                
+                                    // Ambil data PHP untuk product yang sudah dipilih
+                                    const selectedProduct = '<?= $selectedProduct ?>'; // PHP variable for selected product
+                                
+                                    // Fetch options from the JSON file and populate select dropdown
+                                    fetch('product.json') // Assuming you have a JSON file named 'products.json'
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            data.forEach(product => {
+                                                const optionProduct = document.createElement('option');
+                                                optionProduct.value = product;
+                                                optionProduct.textContent = product;
+                                
+                                                // Mark as selected if it matches the current value from the database
+                                                if (product === selectedProduct) {
+                                                    optionProduct.selected = true;
+                                                }
+                                                productSelect.appendChild(optionProduct);
+                                            });
+                                        })
+                                        .catch(error => console.error('Error fetching product data:', error));
+                                });
+                            </script>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="next_port" class="form-label">Next Port </label>
@@ -347,13 +355,13 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="commence_pump" class="form-label">Commence Pump </label>
-                                    <input type="text" class="form-control" name="commence_pump" id="commence_pump" value="<?= $delivery['commence_pump']?>">
+                                    <input type="text" class="form-control" id="commence_pump" value="<?= $delivery['commence_pump']?>" disabled>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
-                                    <label for="finished_pump" class="form-label">E.T.D </label>
-                                    <input type="text" class="form-control" name="finished_pump" id="finished_pump" value="<?= $delivery['finished_pump']?>">
+                                    <label for="etd" class="form-label">E.T.D </label>
+                                    <input type="text" class="form-control" id="etd" value="<?= $delivery['departure_time']?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -361,7 +369,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="finished_pump" class="form-label">Finished Pump </label>
-                                    <input type="text" class="form-control" name="finished_pump" id="finished_pump" value="<?= $delivery['finished_pump']?>">
+                                    <input type="text" class="form-control" id="finished_pump" value="<?= $delivery['finished_pump']?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -372,316 +380,115 @@ if (!isset($_SESSION["login"])) {
                             <hr>
                         </div>
 
-                        <div class="mb-2">
-                            <label for="customer_id" class="form-label">Customer <span id="x">*</span></label>
-                            <select name="customer_id" id="customer_id" class="form-select" required>
-                                <option value="">Select Customer</option>
-                                <?php foreach($customer as $row) : ?>
-                                    <option value="<?= $row['id_customer']?>" <?= ($row['id_customer'] == $delivery['customer_id']) ? 'selected' : '' ?>><?= $row['customer_name']?></option>
-                                <?php endforeach;?>
-                            </select>
-                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <b>Fuel Characteristic</b>/<i>Karakteristik bahan bakar</i>
+                                <div class="mb-2">
+                                    <label for="visc" class="form-label">Visc. cSt @40&deg;C <br/><i>(ASTM D445/ISO 3104)</i> <span id="x">*</span></label>
+                                    <input type="text" name="visc" id="visc" value="3.264" class="form-control">
+                                </div>
+                            
+                                <div class="mb-2">
+                                    <label for="density" class="form-label">Density @ 15&deg;C <br/><i>(ASTM D1298-D4052)</i> <span id="x">*</span></label>
+                                    <input type="text" id="density" name="density" class="form-control" value="0.849" required>
+                                </div>
 
-                        <div class="mb-2">
-                            <label class="form-label">Delivery Address </label>
-                            <textarea id="delivery_address" class="form-control" disabled></textarea>
-                        </div>
+                                <div class="mb-2">
+                                    <label for="flashpoint" class="form-label">Flashpoint &deg;C <br/><i>(ASTM D93)</i> <span id="x">*</span></label>
+                                    <input type="text" id="flashpoint" name="flashpoint" class="form-control" value="75.0" required>
+                                </div>
 
-                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                        <script>
-                        $(document).ready(function() {
-                            var customer_id = $('#customer_id').val();
+                                <div class="mb-2">
+                                    <label for="sulphur" class="form-label">Sulphur wt% <br/><i>(ASTM D2622/D4294/D5453)</i> <span id="x">*</span></label>
+                                    <input type="text" id="sulphur" name="sulphur" class="form-control" value="0.005" required>
+                                </div>
 
-                            // Pastikan customer_id dipilih saat halaman dimuat
-                            if (customer_id) {
-                                $.ajax({
-                                    url: 'get_delivery_address.php', // File PHP untuk mengambil data address
-                                    type: 'POST',
-                                    data: { customer_id: customer_id },
-                                    success: function(response) {
-                                        // Menampilkan address di dalam textarea
-                                        $('#delivery_address').val(response);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error(error);
+                                <div class="mb-2">
+                                    <label for="water_content" class="form-label">Water Content % Vol. <br/><i>(ASTM D6304/ISO 3733:1999)</i> <span id="x">*</span></label>
+                                    <input type="text" id="water_content" name="water_content" class="form-control" value="<0.0005" required>
+                                </div>
+                            </div>
+                            
+                            <?php
+                                $quantity = $delivery['quantity']; // Asumsikan $delivery['quantity'] sudah didefinisikan
+                                $wcf = 0.8479; // Nilai default dari W.C.F
+                            ?>
+
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <b>Quantity</b>/<i>Jumlah</i>
+
+                                <div class="mb-2">
+                                    <label for="quantity" class="form-label">Gross Vol. Litres <span id="x">*</span></label>
+                                    <input type="text" class="form-control" value="<?= number_format($quantity, 0, ',', '.') ?>" disabled>
+                                </div>                                
+
+                                <div class="mb-2">
+                                    <label for="cubic_meter" class="form-label">Cubic Meter (KL)</label>
+                                    <input type="text" id="cubic_meter" class="form-control" value="<?= number_format($quantity / 1000, 0, ',', '.') ?>" disabled>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="net_metric_ton" class="form-label">Net Metric Tons</label>
+                                    <input type="text" id="net_metric_ton" name="net_metric_ton" class="form-control" value="<?= number_format(($quantity * $wcf / 1000), 0, ',', '.') ?>">
+                                </div>
+
+                                <script>
+                                    function updateNetMetricTon() {
+                                        // Ambil nilai W.C.F dari input
+                                        let wcf = parseFloat(document.getElementById('wcf').value) || 0;
+                                        
+                                        // Ambil nilai quantity dari PHP
+                                        let quantity = <?= $quantity ?>;
+                                        
+                                        // Hitung Net Metric Tons
+                                        let netMetricTon = (quantity * wcf / 1000).toFixed(0);
+                                        
+                                        // Format angka menjadi ribuan dengan titik (misal: 1.000)
+                                        netMetricTon = netMetricTon.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                                        
+                                        // Update input Net Metric Tons
+                                        document.getElementById('net_metric_ton').value = netMetricTon;
                                     }
-                                });
-                            }
 
-                            // Menangani perubahan pilihan customer
-                            $('#customer_id').change(function() {
-                                var customer_id = $(this).val();
-
-                                // Pastikan customer_id dipilih
-                                if (customer_id) {
-                                    $.ajax({
-                                        url: 'get_delivery_address.php', // File PHP untuk mengambil data address
-                                        type: 'POST',
-                                        data: { customer_id: customer_id },
-                                        success: function(response) {
-                                            // Menampilkan address di dalam textarea
-                                            $('#delivery_address').val(response);
-                                        },
-                                        error: function(xhr, status, error) {
-                                            console.error(error);
-                                        }
-                                    });
-                                } else {
-                                    // Jika tidak ada customer yang dipilih, kosongkan textarea
-                                    $('#delivery_address').val('');
-                                }
-                            });
-                        });
-                        </script>
-
-
-                        <div class="text-center">
-                            <hr>
-                            <p>DELIVERY INFORMATION</p>
-                            <hr>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="mb-2">
-                                    <label for="product" class="form-label">Product <span id="x">*</span></label>
-                                    <select name="product" id="product" class="form-select" required>
-                                        <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                    </select>
-                                </div>
-                            
-                                <div class="mb-2">
-                                    <label for="new_product" class="form-label">Add New Product</label>
-                                    <input type="text" id="new_product" class="form-control" placeholder="Enter new product">
-                                    <button id="add_product" class="btn btn-primary btn-sm mt-2">Add</button>
-                                </div>
-                            </div>
-                            
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const productSelect = document.getElementById('product');
-                                    const selectedProduct = '<?= $selectedProduct ?>'; // PHP variable for selected product
-                            
-                                    // Fetch options from JSON file and populate select dropdown
-                                    fetch('product.json')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            data.forEach(product => {
-                                                const option = document.createElement('option');
-                                                option.value = product;
-                                                option.textContent = product;
-                            
-                                                if (product === selectedProduct) {
-                                                    option.selected = true; // Mark the current product as selected
-                                                }
-                                                productSelect.appendChild(option);
-                                            });
-                                        })
-                                        .catch(error => console.error('Error fetching product data:', error));
-                            
-                                    // Add new option to the select dropdown and update the JSON file
-                                    document.getElementById('add_product').addEventListener('click', function() {
-                                        const newProduct = document.getElementById('new_product').value.trim();
-                            
-                                        if (newProduct) {
-                                            // Add new option to the select dropdown
-                                            const option = document.createElement('option');
-                                            option.value = newProduct;
-                                            option.textContent = newProduct;
-                                            productSelect.appendChild(option);
-                            
-                                            // Select the newly added option
-                                            productSelect.value = newProduct;
-                            
-                                            // Send the new option to the server to update the JSON file
-                                            fetch('update_product.php', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({ product: newProduct })
-                                            })
-                                            .then(response => response.text())
-                                            .then(data => {
-                                                console.log(data);
-                                                alert('New product added successfully!');
-                                            })
-                                            .catch(error => console.error('Error updating JSON file:', error));
-                                        } else {
-                                            alert('Please enter a valid product.');
-                                        }
-                                    });
-                                });
-                            </script>
-                            
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="mb-2">
-                                    <label for="armada" class="form-label">Vessel / Fuel Truck <span id="x">*</span></label>
-                                    <select name="armada" id="armada" class="form-select" required>
-                                        <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                    </select>
-                                </div>
-                            
-                                <div class="mb-2">
-                                    <label for="new_armada" class="form-label">Add New Vessel / Fuel Truck</label>
-                                    <input type="text" id="new_armada" class="form-control" placeholder="Enter new option">
-                                    <button id="add_armada" class="btn btn-primary btn-sm mt-2">Add</button>
-                                </div>
-                            </div>
-                            
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const armadaSelect = document.getElementById('armada');
-                                    const selectedArmada = '<?= $selectedArmada ?>'; // PHP variable for selected armada
-                            
-                                    // Fetch options from JSON file and populate select dropdown
-                                    fetch('armada.json')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            data.forEach(armada => {
-                                                const option = document.createElement('option');
-                                                option.value = armada;
-                                                option.textContent = armada;
-                            
-                                                if (armada === selectedArmada) {
-                                                    option.selected = true; // Mark the current armada as selected
-                                                }
-                                                armadaSelect.appendChild(option);
-                                            });
-                                        })
-                                        .catch(error => console.error('Error fetching armada data:', error));
-                            
-                                    // Add new option to the select dropdown and update the JSON file
-                                    document.getElementById('add_armada').addEventListener('click', function() {
-                                        const newArmada = document.getElementById('new_armada').value.trim();
-                            
-                                        if (newArmada) {
-                                            // Add new option to the select dropdown
-                                            const option = document.createElement('option');
-                                            option.value = newArmada;
-                                            option.textContent = newArmada;
-                                            armadaSelect.appendChild(option);
-                            
-                                            // Select the newly added option
-                                            armadaSelect.value = newArmada;
-                            
-                                            // Send the new option to the server to update the JSON file
-                                            fetch('update_armada.php', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({ armada: newArmada })
-                                            })
-                                            .then(response => response.text())
-                                            .then(data => {
-                                                console.log(data);
-                                                alert('New option added successfully!');
-                                            })
-                                            .catch(error => console.error('Error updating JSON file:', error));
-                                        } else {
-                                            alert('Please enter a valid option.');
-                                        }
-                                    });
-                                });
-                            </script>
-                            
-
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="mb-2">
-                                    <label for="quantity" class="form-label">Quantity <span id="x">*</span></label>
-                                    <div class="input-group mb-2">
-                                        <input type="text" name="quantity" id="quantity" class="form-control" aria-label="Quantity" value="<?= number_format($delivery['quantity'], 0, '', '.') ?>" aria-describedby="basic-addon2">
-                                        <span class="input-group-text" id="basic-addon2">Liter</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    // Format value on page load
-                                    let quantityField = $('#quantity');
-                                    let initialValue = quantityField.val().replace(/\D/g, ''); // Remove non-digit characters
-                        
-                                    // Store raw value for form submission
-                                    quantityField.data('raw-value', initialValue);
-                        
-                                    $('#quantity').on('input', function() {
-                                        // Get the input value and remove any non-digit characters
-                                        let rawValue = $(this).val().replace(/\D/g, '');
+                                    function updateWcf(value) {
+                                        // Update nilai W.C.F secara real-time
+                                        document.getElementById('wcf').value = value;
                                         
-                                        // Save the raw value for database purposes
-                                        $(this).data('raw-value', rawValue);
-                                        
-                                        // Format the value with thousands separator for display
-                                        if (rawValue) {
-                                            let formattedValue = Number(rawValue).toLocaleString('id-ID'); // Change 'id-ID' to your locale if needed
-                                            $(this).val(formattedValue);
-                                        } else {
-                                            $(this).val('');
-                                        }
-                                    });
-                        
-                                    // Ensure the raw value is used for form submission
-                                    $('form').on('submit', function() {
-                                        let rawValue = quantityField.data('raw-value');
-                                        quantityField.val(rawValue); // Set the raw value before form submission
-                                    });
-                                });
-                            </script>
-                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                        // Panggil fungsi untuk memperbarui Net Metric Tons
+                                        updateNetMetricTon();
+                                    }
+                                </script>
+
                                 <div class="mb-2">
-                                    <label for="driver" class="form-label">Master / Driver </label>
-                                    <input type="text" class="form-control" name="driver" id="driver" value="<?= $delivery['driver']?>">
+                                    <label for="vcf" class="form-label">V.C.F (ASTM tab. 54)</label>
+                                    <input type="text" id="vcf" name="vcf" class="form-control" value="0.9891">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
+
                                 <div class="mb-2">
-                                    <label for="departure_time" class="form-label">Departure Time </label>
-                                    <input type="text" class="form-control" name="departure_time" id="departure_time" value="<?= $delivery['departure_time']?>">
+                                    <label for="wcf" class="form-label">W.C.F (ASTM tab. 56)</label>
+                                    <input type="text" id="wcf" name="wcf" class="form-control" value="<?= $wcf ?>" oninput="updateWcf(this.value)">
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12">
+
                                 <div class="mb-2">
-                                    <label for="arrival_time" class="form-label">Arrival Time </label>
-                                    <input type="text" class="form-control" name="arrival_time" id="arrival_time" value="<?= $delivery['arrival_time']?>">
+                                    <label for="temp" class="form-label">Temperature &deg;C</label>
+                                    <input type="text" id="temp" name="temp" class="form-control" value="30.0">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="table_52" class="form-label">Table 52 &deg;C</label>
+                                    <input type="text" id="table_52" name="table_52" class="form-control" value="6.293">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="table_1" class="form-label">Table 1 (MT/LT)</label>
+                                    <input type="text" id="table_1" name="table_1" class="form-control" value="0.98421">
                                 </div>
                             </div>
                         </div>
 
-                        
-                        
-                        
-
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="mb-2">
-                                    <label for="commence_pump" class="form-label">Commence Pump </label>
-                                    <input type="text" class="form-control" name="commence_pump" id="commence_pump" value="<?= $delivery['commence_pump']?>">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="mb-2">
-                                    <label for="finished_pump" class="form-label">Finished Pump </label>
-                                    <input type="text" class="form-control" name="finished_pump" id="finished_pump" value="<?= $delivery['finished_pump']?>">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-2">
-                            <label for="seal_number1" class="form-label">Seal Number 1 </label>
-                            <input type="text" class="form-control" name="seal_number1" id="seal_number1" value="<?= $delivery['seal_number1']?>">
-                        </div>
-                        <div class="mb-2">
-                            <label for="seal_number2" class="form-label">Seal Number 2 </label>
-                            <input type="text" class="form-control" name="seal_number2" id="seal_number2" value="<?= $delivery['seal_number2']?>">
-                        </div>
 
                         <div class="text-left">
-                        <button type="submit" class="btn btn-primary btn-sm" name="editDelivery"><i class="fa fa-file-invoice fa-sm"></i> Update</button>
+                        <button type="submit" class="btn btn-primary btn-sm" name="tambahBdr"><i class="fa fa-file-invoice fa-sm"></i> Create</button>
                         <a href="manage-delivery-order.php" class="btn btn-danger btn-sm"><i class="fa fa-times fa-sm"></i> Cancel</a>
                         </div>
                     </form><!-- End Horizontal Form -->

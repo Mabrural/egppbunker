@@ -3,7 +3,7 @@ include "koneksi.php";
 
 $id_bdr = $_GET['id_bdr'];
 
-$query = "SELECT * FROM delivery_order JOIN bdr ON bdr.do_id=delivery_order.id_do WHERE id_bdr = ?";
+$query = "SELECT * FROM bdr WHERE id_bdr = ?";
 $stmt = $koneksi->prepare($query);
 $stmt->bind_param("i", $id_bdr);
 $stmt->execute();

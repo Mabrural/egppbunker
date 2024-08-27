@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 26, 2024 at 12:44 PM
+-- Generation Time: Aug 27, 2024 at 11:48 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,6 +46,13 @@ CREATE TABLE `bdr` (
   `table_52` varchar(10) NOT NULL,
   `table_1` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bdr`
+--
+
+INSERT INTO `bdr` (`id_bdr`, `do_id`, `bdr_no`, `delivered_by`, `vessel_cust`, `next_port`, `visc`, `density`, `flashpoint`, `sulphur`, `water_content`, `net_metric_ton`, `vcf`, `wcf`, `temp`, `table_52`, `table_1`) VALUES
+(21, 6, '001/BDR-GPP/VIII/2024', '', 'MT Rizki Barokah', '', '3.264', '0.849', '75.0', '0.005', '<0.0005', '848', '0.9891', '0.8479', '30.0', '6.293', '0.98421');
 
 -- --------------------------------------------------------
 
@@ -98,7 +105,7 @@ CREATE TABLE `delivery_order` (
 --
 
 INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `driver`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
-(6, '001/PO-GPP-2024', '001/DO-GPP/VIII/2024', '2024-08-22', 1, 'Biosolar', 'TK Selaras 01', 2000000, '', '', '', 'Batam', 'Port B', '', '', '', ''),
+(6, '001/PO-GPP-2024', '001/DO-GPP/VIII/2024', '2024-08-22', 1, 'Pertadex', 'TK Selaras 01', 1000000, '', '', '', 'Batam', 'Batam', '', '', '', ''),
 (7, '002/PO-GPP-2024', '002/DO-GPP/VIII/2024', NULL, 4, 'Pertadex', 'TB. Tiga Permata', 2000000, '', '', '', 'Port A', 'Port B', '', '', '', ''),
 (13, '003/PO-GPP-2024', '003/DO-GPP/VIII/2024', NULL, 1, 'Pertadex', 'Truck GPP', 450000, '', '', '', 'Port B', 'Port C', '', '', '', '');
 
@@ -166,7 +173,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bdr`
 --
 ALTER TABLE `bdr`
-  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `customer`

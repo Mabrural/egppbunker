@@ -13,26 +13,23 @@ if (!isset($_SESSION["login"])) {
     $nama = $_SESSION["nama"];
     $level = $_SESSION['is_admin'];
 
-    $id_do = mysqli_real_escape_string($koneksi, $_GET['id_do']);
+    $id_bdr = mysqli_real_escape_string($koneksi, $_GET['id_bdr']);
 
     $customer = query("SELECT * FROM customer");
-    $delivery = query("SELECT * FROM delivery_order WHERE id_do=$id_do")[0];
+    $bdr = query("SELECT * FROM bdr JOIN delivery_order ON delivery_order.id_do=bdr.do_id WHERE id_bdr=$id_bdr")[0];
 
-    $selectedProduct = $delivery['product'];
+    $selectedProduct = $bdr['product'];
 
-    // Pastikan $delivery['armada'] adalah string atau array yang sesuai
-    $selectedArmada = isset($delivery['armada']) ? $delivery['armada'] : '';
+    // Ambil nilai vessel_cust dari array $bdr
+    $selectedVessel = isset($bdr['vessel_cust']) ? $bdr['vessel_cust'] : '';
 
-    $selectedDischargingPort = $delivery['discharging_port'];
-
-    // Generate nomor bdr otomatis
-    $generated_bdr_number = generateBdrNumber();
+    $selectedDischargingPort = $bdr['discharging_port'];
 
     // cek apakah tombol submit sudah ditekan atau belum
-    if (isset($_POST['tambahBdr']) ) {
+    if (isset($_POST['editBdr']) ) {
 	
         // cek apakah data berhasil update atau tidak
-        if(tambahBdr($_POST) > 0 ) {
+        if(editBdr($_POST) > 0 ) {
             echo '<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css"></script>';
             echo '<link rel="stylesheet" href="./sweetalert2.min.css"></script>';
             echo '<script src="./sweetalert2.min.js"></script>';
@@ -41,7 +38,7 @@ if (!isset($_SESSION["login"])) {
                 swal.fire({
                     
                     title               : 'Success',
-                    text                : 'BDR successfully created!',
+                    text                : 'BDR successfully updated!',
                     icon                : 'success',
                     timer               : 2000,
                     showConfirmButton   : false
@@ -61,7 +58,7 @@ if (!isset($_SESSION["login"])) {
                 swal.fire({
                     
                     title               : 'Failed',
-                    text                : 'Failed to create BDR!',
+                    text                : 'Failed to updatex BDR!',
                     icon                : 'error',
                     timer               : 2000,
                     showConfirmButton   : false
@@ -104,11 +101,11 @@ if (!isset($_SESSION["login"])) {
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>New Bunker Delivery Receipt</h1>
+      <h1>Edit Bunker Delivery Receipt</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">New Bunker Delivery Receipt</li>
+          <li class="breadcrumb-item active">Edit Bunker Delivery Receipt</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -120,15 +117,16 @@ if (!isset($_SESSION["login"])) {
 
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">DO Number : <?= $delivery['do_number']?></h5>
+                        <h5 class="card-title">DO Number : <?= $bdr['do_number']?></h5>
         
                     <!-- Horizontal Form -->
                     <form action="" method="post">
 
-                        <input type="hidden" name="do_id" value="<?= $id_do?>">
+                        <input type="hidden" name="id_bdr" value="<?= $id_bdr?>">
+                        <input type="hidden" name="do_id" value="<?= $bdr['do_id']?>">
                         <div class="mb-2">
                             <label for="bdr_no" class="form-label">BDR No <span id="x">*</span></label>
-                            <input type="text" class="form-control" name="bdr_no" id="bdr_no" value="<?php echo htmlspecialchars($generated_bdr_number); ?>" readonly>
+                            <input type="text" class="form-control" name="bdr_no" id="bdr_no" value="<?= $bdr['bdr_no'] ?>" readonly>
                         </div>
 
                         <div class="row">
@@ -201,7 +199,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="do_date" class="form-label">Date </label>
-                                    <input type="date" class="form-control" id="do_date" value="<?= $delivery['do_date']?>" disabled>
+                                    <input type="date" class="form-control" id="do_date" value="<?= $bdr['do_date']?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -209,7 +207,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 <div class="mb-2">
                                     <label for="delivered_by" class="form-label">Delivered by </label>
-                                    <input type="text" class="form-control" name="delivered_by" id="delivered_by" >
+                                    <input type="text" class="form-control" name="delivered_by" id="delivered_by" value="<?= $bdr['delivered_by']?>">
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
@@ -277,12 +275,20 @@ if (!isset($_SESSION["login"])) {
                                             const vesselSelect = document.getElementById('vessel_cust');
                                             vesselSelect.innerHTML = ''; // Clear existing options
                                             
+                                            // Retrieve the selected vessel from PHP
+                                            const selectedVessel = '<?php echo $selectedVessel; ?>';
+                                
                                             vessels.forEach(vessel => {
                                                 // Create new option
                                                 const option = document.createElement('option');
                                                 option.value = vessel;
                                                 option.text = vessel;
-                                                
+                                
+                                                // Set selected option
+                                                if (vessel === selectedVessel) {
+                                                    option.selected = true;
+                                                }
+                                
                                                 // Add new option to the dropdown
                                                 vesselSelect.add(option);
                                             });
@@ -304,7 +310,7 @@ if (!isset($_SESSION["login"])) {
                                     // Add new option to the dropdown
                                     vesselSelect.add(newOption);
                                 }
-                            </script>  
+                            </script>   
                         </div>
 
                         <div class="row">
@@ -346,7 +352,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="next_port" class="form-label">Next Port </label>
-                                    <input type="text" class="form-control" name="next_port" id="next_port">
+                                    <input type="text" class="form-control" name="next_port" value="<?= $bdr['next_port']?>" id="next_port">
                                 </div>
                             </div>
                         </div>
@@ -355,13 +361,13 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="commence_pump" class="form-label">Commence Pump </label>
-                                    <input type="text" class="form-control" id="commence_pump" value="<?= $delivery['commence_pump']?>" disabled>
+                                    <input type="text" class="form-control" id="commence_pump" value="<?= $bdr['commence_pump']?>" disabled>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="etd" class="form-label">E.T.D </label>
-                                    <input type="text" class="form-control" id="etd" value="<?= $delivery['departure_time']?>" disabled>
+                                    <input type="text" class="form-control" id="etd" value="<?= $bdr['departure_time']?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -369,7 +375,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="finished_pump" class="form-label">Finished Pump </label>
-                                    <input type="text" class="form-control" id="finished_pump" value="<?= $delivery['finished_pump']?>" disabled>
+                                    <input type="text" class="form-control" id="finished_pump" value="<?= $bdr['finished_pump']?>" disabled>
                                 </div>
                             </div>
                         </div>
@@ -385,32 +391,32 @@ if (!isset($_SESSION["login"])) {
                                 <b>Fuel Characteristic</b>/<i>Karakteristik bahan bakar</i>
                                 <div class="mb-2">
                                     <label for="visc" class="form-label">Visc. cSt @40&deg;C <br/><i>(ASTM D445/ISO 3104)</i> <span id="x">*</span></label>
-                                    <input type="text" name="visc" id="visc" value="3.264" class="form-control">
+                                    <input type="text" name="visc" id="visc" value="<?= $bdr['visc']?>" class="form-control">
                                 </div>
                             
                                 <div class="mb-2">
                                     <label for="density" class="form-label">Density @ 15&deg;C <br/><i>(ASTM D1298-D4052)</i> <span id="x">*</span></label>
-                                    <input type="text" id="density" name="density" class="form-control" value="0.849" required>
+                                    <input type="text" id="density" name="density" class="form-control" value="<?= $bdr['density']?>" required>
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="flashpoint" class="form-label">Flashpoint &deg;C <br/><i>(ASTM D93)</i> <span id="x">*</span></label>
-                                    <input type="text" id="flashpoint" name="flashpoint" class="form-control" value="75.0" required>
+                                    <input type="text" id="flashpoint" name="flashpoint" class="form-control" value="<?= $bdr['flashpoint']?>" required>
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="sulphur" class="form-label">Sulphur wt% <br/><i>(ASTM D2622/D4294/D5453)</i> <span id="x">*</span></label>
-                                    <input type="text" id="sulphur" name="sulphur" class="form-control" value="0.005" required>
+                                    <input type="text" id="sulphur" name="sulphur" class="form-control" value="<?= $bdr['sulphur']?>" required>
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="water_content" class="form-label">Water Content % Vol. <br/><i>(ASTM D6304/ISO 3733:1999)</i> <span id="x">*</span></label>
-                                    <input type="text" id="water_content" name="water_content" class="form-control" value="<0.0005" required>
+                                    <input type="text" id="water_content" name="water_content" class="form-control" value="<?= $bdr['water_content']?>" required>
                                 </div>
                             </div>
                             
                             <?php
-                                $quantity = $delivery['quantity']; // Asumsikan $delivery['quantity'] sudah didefinisikan
+                                $quantity = $bdr['quantity']; // Asumsikan $bdr['quantity'] sudah didefinisikan
                                 $wcf = 0.8479; // Nilai default dari W.C.F
                             ?>
 
@@ -461,35 +467,35 @@ if (!isset($_SESSION["login"])) {
 
                                 <div class="mb-2">
                                     <label for="vcf" class="form-label">V.C.F (ASTM tab. 54)</label>
-                                    <input type="text" id="vcf" name="vcf" class="form-control" value="0.9891">
+                                    <input type="text" id="vcf" name="vcf" class="form-control" value="<?= $bdr['vcf']?>">
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="wcf" class="form-label">W.C.F (ASTM tab. 56)</label>
-                                    <input type="text" id="wcf" name="wcf" class="form-control" value="<?= $wcf ?>" oninput="updateWcf(this.value)">
+                                    <input type="text" id="wcf" name="wcf" class="form-control" value="<?= $bdr['wcf'] ?>" oninput="updateWcf(this.value)">
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="temp" class="form-label">Temperature &deg;C</label>
-                                    <input type="text" id="temp" name="temp" class="form-control" value="30.0">
+                                    <input type="text" id="temp" name="temp" class="form-control" value="<?= $bdr['temp'] ?>">
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="table_52" class="form-label">Table 52 &deg;C</label>
-                                    <input type="text" id="table_52" name="table_52" class="form-control" value="6.293">
+                                    <input type="text" id="table_52" name="table_52" class="form-control" value="<?= $bdr['table_52'] ?>">
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="table_1" class="form-label">Table 1 (MT/LT)</label>
-                                    <input type="text" id="table_1" name="table_1" class="form-control" value="0.98421">
+                                    <input type="text" id="table_1" name="table_1" class="form-control" value="<?= $bdr['table_1'] ?>">
                                 </div>
                             </div>
                         </div>
 
 
                         <div class="text-left">
-                        <button type="submit" class="btn btn-primary btn-sm" name="tambahBdr"><i class="fa fa-file-invoice fa-sm"></i> Create</button>
-                        <a href="manage-delivery-order.php" class="btn btn-danger btn-sm"><i class="fa fa-times fa-sm"></i> Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-sm" name="editBdr"><i class="fa fa-file-invoice fa-sm"></i> Update</button>
+                        <a href="view-bdr.php?id_bdr=<?= $id_bdr?>" class="btn btn-danger btn-sm"><i class="fa fa-times fa-sm"></i> Cancel</a>
                         </div>
                     </form><!-- End Horizontal Form -->
         

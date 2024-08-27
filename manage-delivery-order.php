@@ -69,7 +69,7 @@ if (!isset($_SESSION["login"])) {
                     <tbody>
                     <?php 
                         $no = 1;
-                        $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id ORDER BY id_do DESC";
+                        $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id LEFT JOIN bdr ON bdr.do_id=delivery_order.id_do ORDER BY id_do DESC";
                         $tampil = mysqli_query($koneksi, $query);
     
                         if (mysqli_num_rows($tampil) > 0) {
@@ -87,7 +87,7 @@ if (!isset($_SESSION["login"])) {
                         <td><?= $data['do_number']?></td>
                         <td><?= $data['customer_name']?></td>
                         <td><?= $data['product']?></td>
-                        <td><?= number_format($data['quantity'], 0, ',', '.') ?></td>
+                        <td><?= number_format($data['quantity'], 0, ',', '.') ?> Liters</td>
                         <td>
                           <a href="#" class="btn btn-info btn-sm" onclick="printContent(<?= $data['id_do']?>);"><i class="fa fa-print fa-sm"></i> Print</a>
                           <a href="edit-delivery.php?id_do=<?= $data['id_do']?>" class="btn btn-warning btn-sm"><i class="fa fa-pen fa-sm"></i> Edit</a>
@@ -98,7 +98,7 @@ if (!isset($_SESSION["login"])) {
                               <a href="tambah-bdr.php?id_do=<?= $id_do ?>" class="btn btn-primary btn-sm"><i class="fa fa-file-alt fa-sm"></i> BDR</a>
                           <?php else: ?>
                               <!-- Jika ada data di tabel bdr, tampilkan tombol View BDR -->
-                              <a href="view-bdr.php?id_do=<?= $id_do ?>" class="btn btn-secondary btn-sm"><i class="fa fa-eye fa-sm"></i> View BDR</a>
+                              <a href="view-bdr.php?id_bdr=<?= $data['id_bdr'] ?>" class="btn btn-secondary btn-sm"><i class="fa fa-eye fa-sm"></i> View BDR</a>
                           <?php endif; ?>
                         </td>
                       </tr>

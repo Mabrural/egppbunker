@@ -468,6 +468,58 @@ function tambahBdr($data) {
 	return mysqli_affected_rows($koneksi);
 }
 
+function editBdr($data) {
+	global $koneksi;
+	$id_bdr = mysqli_real_escape_string($koneksi, $data['id_bdr']);
+	$do_id = mysqli_real_escape_string($koneksi, $data['do_id']);
+	$bdr_no = mysqli_real_escape_string($koneksi, $data['bdr_no']);
+	$delivered_by = mysqli_real_escape_string($koneksi, $data['delivered_by']);
+	$vessel_cust = mysqli_real_escape_string($koneksi, $data['vessel_cust']);
+	$next_port = mysqli_real_escape_string($koneksi, $data['next_port']);
+	$visc = mysqli_real_escape_string($koneksi, $data['visc']);
+	$density = mysqli_real_escape_string($koneksi, $data['density']);
+	$flashpoint = mysqli_real_escape_string($koneksi, $data['flashpoint']);
+	$sulphur = mysqli_real_escape_string($koneksi, $data['sulphur']);
+	$water_content = mysqli_real_escape_string($koneksi, $data['water_content']);
+	$net_metric_ton = mysqli_real_escape_string($koneksi, $data['net_metric_ton']);
+	$vcf = mysqli_real_escape_string($koneksi, $data['vcf']);
+	$wcf = mysqli_real_escape_string($koneksi, $data['wcf']);
+	$temp = mysqli_real_escape_string($koneksi, $data['temp']);
+	$table_52 = mysqli_real_escape_string($koneksi, $data['table_52']);
+	$table_1 = mysqli_real_escape_string($koneksi, $data['table_1']);
+
+	$query = "UPDATE bdr SET
+				do_id = '$do_id',
+				bdr_no = '$bdr_no',
+				delivered_by = '$delivered_by',
+				vessel_cust = '$vessel_cust',
+				next_port = '$next_port',
+				visc = '$visc',
+				density = '$density',
+				flashpoint = '$flashpoint',
+				sulphur = '$sulphur',
+				water_content = '$water_content',
+				net_metric_ton = '$net_metric_ton',
+				vcf = '$vcf',
+				wcf = '$wcf',
+				temp = '$temp',
+				table_52 = '$table_52',
+				table_1 = '$table_1'
+			  WHERE id_bdr = $id_bdr
+			";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function removeBdr($id_bdr) {
+	global $koneksi;
+	mysqli_query($koneksi, "DELETE FROM bdr WHERE id_bdr=$id_bdr");
+
+	return mysqli_affected_rows($koneksi);
+
+}
+
 function tambahCompany($data) {
 	global $koneksi;
 	$company_name = htmlspecialchars($data["company_name"]);

@@ -172,22 +172,31 @@ function printContent(id_do) {
             rightAlignedContent += `<div style="position: absolute; top: 95px; left: 755px;">${data.do_number}</div>`;
             rightAlignedContent += `<div style="position: absolute; top: 158px; left: 755px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
 
-            const splitAddress = data.address.match(/.{1,50}/g).join('<br>');
+            // Menggunakan CSS untuk menangani pemisahan alamat berdasarkan lebar
             let leftAlignedContent = '';
             leftAlignedContent += `<div style="position: absolute; top: 333px; left: 155px;">${data.customer_name}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 395px; left: 155px;">${splitAddress}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 395px; left: 155px; max-width: 500px; white-space: normal; overflow-wrap: break-word;">${data.address}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 540px; left: 155px;">${data.product}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 540px; left: 755px; width: 300px;">${data.armada}</div>`;
             leftAlignedContent += `<div style="position: absolute; top: 600px; left: 155px;">${formattedQuantity}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 600px; left: 755px; width: 300px;">${(data.driver ? data.driver : 'driver')}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 655px; left: 155px;">${(data.departure_time ? data.departure_time : 'starttime')}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 655px; left: 755px; width: 300px;">${(data.arrival_time ? data.arrival_time : 'arrivaltime')}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 713px; left: 155px;">${data.loading_port}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 713px; left: 755px; width: 300px;">${data.discharging_port}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 768px; left: 155px;">${(data.commence_pump ? data.commence_pump : 'commence_pump')}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 768px; left: 755px; width: 300px;">${(data.finished_pump ? data.finished_pump : 'finished_pump')}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 825px; left: 155px;">${(data.seal_number1 ? data.seal_number1 : 'sealnumber1')}</div>`;
-            leftAlignedContent += `<div style="position: absolute; top: 880px; left: 155px;">${(data.seal_number2 ? data.seal_number2 : 'sealnumber2')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 600px; left: 755px; width: 300px;">${(data.driver ? data.driver : '&nbsp;')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 655px; left: 155px;">${(data.departure_time ? data.departure_time : '&nbsp;')}</div>`;
+
+            // Tentukan posisi top untuk discharging_port berdasarkan width
+            const dischargingPortWidth = data.discharging_port.length * 8; // Perkirakan lebar teks, 8px per karakter
+            const dischargingPortTop = dischargingPortWidth > 300 ? 700 : 713;
+
+            // Tentukan posisi top untuk loading_port berdasarkan width
+            const loadingPortWidth = data.loading_port.length * 8; // Perkirakan lebar teks, 8px per karakter
+            const loadingPortTop = loadingPortWidth > 340 ? 700 : 713;
+
+            leftAlignedContent += `<div style="position: absolute; top: 655px; left: 755px; width: 300px;">${(data.arrival_time ? data.arrival_time : '&nbsp;')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: ${loadingPortTop}px; left: 155px; width: 310px; white-space: normal; overflow-wrap: break-word;">${data.loading_port}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: ${dischargingPortTop}px; left: 755px; width: 300px; white-space: normal; overflow-wrap: break-word;">${data.discharging_port}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 768px; left: 155px;">${(data.commence_pump ? data.commence_pump : '&nbsp;')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 768px; left: 755px; width: 300px;">${(data.finished_pump ? data.finished_pump : '&nbsp;')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 825px; left: 155px;">${(data.seal_number1 ? data.seal_number1 : '&nbsp;')}</div>`;
+            leftAlignedContent += `<div style="position: absolute; top: 880px; left: 155px;">${(data.seal_number2 ? data.seal_number2 : '&nbsp;')}</div>`;
 
             content += rightAlignedContent + '<br>' + leftAlignedContent;
 
@@ -209,9 +218,9 @@ function printContent(id_do) {
         })
         .catch(error => console.error('Error:', error));
 }
-
-
-
 </script>
+
+
+
 </body>
 </html>

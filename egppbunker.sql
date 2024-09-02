@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2024 at 11:48 AM
+-- Generation Time: Sep 02, 2024 at 06:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,13 +47,6 @@ CREATE TABLE `bdr` (
   `table_1` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `bdr`
---
-
-INSERT INTO `bdr` (`id_bdr`, `do_id`, `bdr_no`, `delivered_by`, `vessel_cust`, `next_port`, `visc`, `density`, `flashpoint`, `sulphur`, `water_content`, `net_metric_ton`, `vcf`, `wcf`, `temp`, `table_52`, `table_1`) VALUES
-(21, 6, '001/BDR-GPP/VIII/2024', '', 'MT Rizki Barokah', '', '3.264', '0.849', '75.0', '0.005', '<0.0005', '848', '0.9891', '0.8479', '30.0', '6.293', '0.98421');
-
 -- --------------------------------------------------------
 
 --
@@ -72,7 +65,9 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`id_customer`, `customer_name`, `address`) VALUES
 (1, 'PT HANSWAY INDONESIA', 'Jl. Duyung, Komp. Citra Super Mall Blok B No. 5-6 Harbour Bay - Batu Ampar, Batam 29432 Indonesia'),
-(4, 'PT MITO INDONESIA', 'Komp. The Centro Town House No. 20, Sukajadi');
+(4, 'PT MITO INDONESIA', 'Komp. The Centro Town House No. 20, Sukajadi'),
+(5, 'PT NUSA HALMAHERA MINERAL ', 'Jl. Pluit Utara Raya No. 53 RT10 RW05 Jakarta Utara, Jl. Pluit Utara Raya No. 53 RT10 RW05 Jakarta Utara'),
+(6, 'PT CITRA MARITIM', 'Sungai Panas, Batam Center');
 
 -- --------------------------------------------------------
 
@@ -105,9 +100,7 @@ CREATE TABLE `delivery_order` (
 --
 
 INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `driver`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
-(6, '001/PO-GPP-2024', '001/DO-GPP/VIII/2024', '2024-08-22', 1, 'Pertadex', 'TK Selaras 01', 1000000, '', '', '', 'Batam', 'Batam', '', '', '', ''),
-(7, '002/PO-GPP-2024', '002/DO-GPP/VIII/2024', NULL, 4, 'Pertadex', 'TB. Tiga Permata', 2000000, '', '', '', 'Port A', 'Port B', '', '', '', ''),
-(13, '003/PO-GPP-2024', '003/DO-GPP/VIII/2024', NULL, 1, 'Pertadex', 'Truck GPP', 450000, '', '', '', 'Port B', 'Port C', '', '', '', '');
+(23, '45000800', '001/DO-GPP/IX/2024', NULL, 5, 'Pertadex', 'TB Hary 02 & OB Hubmar 03', 1000000, '', '', '', 'Batam', 'Jakarta', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -173,19 +166,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bdr`
 --
 ALTER TABLE `bdr`
-  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `users`

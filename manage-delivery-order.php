@@ -63,6 +63,9 @@ if (!isset($_SESSION["login"])) {
                         <th>Customer</th>
                         <th>Product</th>
                         <th>Quantity</th>
+                        <th>Vessel/Fuel Truck</th>
+                        <th>Loading Port</th>
+                        <th>Discharging Port</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -88,6 +91,9 @@ if (!isset($_SESSION["login"])) {
                         <td><?= $data['customer_name']?></td>
                         <td><?= $data['product']?></td>
                         <td><?= number_format($data['quantity'], 0, ',', '.') ?> Liters</td>
+                        <td><?= $data['armada']?></td>
+                        <td><?= $data['loading_port']?></td>
+                        <td><?= $data['discharging_port']?></td>
                         <td>
                           <a href="#" class="btn btn-info btn-sm" onclick="printContent(<?= $data['id_do']?>);"><i class="fa fa-print fa-sm"></i> Print</a>
                           <a href="edit-delivery.php?id_do=<?= $data['id_do']?>" class="btn btn-warning btn-sm"><i class="fa fa-pen fa-sm"></i> Edit</a>

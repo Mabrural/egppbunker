@@ -314,7 +314,7 @@ function tambahDelivery($data) {
     $do_date = !empty($data["do_date"]) ? htmlspecialchars($data["do_date"]) : NULL; // Set to NULL if empty
     $customer_id = htmlspecialchars($data["customer_id"]);
     $product = htmlspecialchars($data["product"]);
-    $armada = htmlspecialchars($data["armada"]);
+    $armada = mysqli_real_escape_string($koneksi, $data["armada"]);
     $quantity = htmlspecialchars($data["quantity"]);
     $driver = htmlspecialchars($data["driver"]);
     $departure_time = htmlspecialchars($data["departure_time"]);

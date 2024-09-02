@@ -176,7 +176,7 @@ if (!isset($_SESSION["login"])) {
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="mb-2">
                                 <label for="do_number" class="form-label">Delivery Order No <span id="x">*</span></label>
-                                <input type="text" class="form-control" name="do_number" id="do_number" value="<?= $delivery['do_number']?>" required readonly>
+                                <input type="text" class="form-control" name="do_number" id="do_number" value="<?= $delivery['do_number']?>" required>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">

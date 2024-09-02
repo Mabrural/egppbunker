@@ -249,9 +249,6 @@ if (!isset($_SESSION["login"])) {
                         <!-- Tombol remove untuk produk akan muncul di sini -->
                     </div>
 
-                    <style>
-                        
-                    </style>
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {

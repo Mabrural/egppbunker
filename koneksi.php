@@ -251,13 +251,43 @@ function removeAdmin($id_user) {
     return mysqli_affected_rows($koneksi);
 }
 
+// function generateDoNumber() {
+//     global $koneksi;
+
+//     // Ambil nomor urut terakhir
+//     $query = "SELECT do_number FROM delivery_order ORDER BY id_do DESC LIMIT 1";
+//     $result = mysqli_query($koneksi, $query);
+//     $last_do_number = mysqli_fetch_assoc($result)['do_number'];
+
+//     // Ekstrak nomor urut terakhir dan tambahkan 1
+//     $last_number = $last_do_number ? (int)explode('/', $last_do_number)[0] : 0;
+//     $new_number = str_pad($last_number + 1, 3, '0', STR_PAD_LEFT);
+
+//     // Dapatkan bulan dalam format Romawi
+//     $month = date('n'); // Bulan dalam format numerik
+//     $month_romawi = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+//     $current_month_romawi = $month_romawi[$month - 1];
+
+//     // Dapatkan tahun saat ini
+//     $year = date('Y');
+
+//     // Format nomor DO
+//     return "{$new_number}/DO-GPP/{$current_month_romawi}/{$year}";
+// }
 function generateDoNumber() {
     global $koneksi;
 
     // Ambil nomor urut terakhir
     $query = "SELECT do_number FROM delivery_order ORDER BY id_do DESC LIMIT 1";
     $result = mysqli_query($koneksi, $query);
-    $last_do_number = mysqli_fetch_assoc($result)['do_number'];
+
+    // Periksa apakah query berhasil dan ada hasilnya
+    if ($result && mysqli_num_rows($result) > 0) {
+        $last_do_number = mysqli_fetch_assoc($result)['do_number'];
+    } else {
+        // Jika tidak ada hasil, atur nomor terakhir menjadi 0
+        $last_do_number = null;
+    }
 
     // Ekstrak nomor urut terakhir dan tambahkan 1
     $last_number = $last_do_number ? (int)explode('/', $last_do_number)[0] : 0;
@@ -274,6 +304,7 @@ function generateDoNumber() {
     // Format nomor DO
     return "{$new_number}/DO-GPP/{$current_month_romawi}/{$year}";
 }
+
 
 
 function tambahDelivery($data) {

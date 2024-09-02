@@ -79,6 +79,47 @@ if (!isset($_SESSION["login"])) {
     span#x{
         color: red;
     }
+
+    .dropdown-container {
+    margin-bottom: 1rem;
+}
+
+/* .remove-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+} */
+
+.remove-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.remove-buttons-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.remove-button {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: left;
+}
+
+
+
 </style>
 
 <body>
@@ -186,139 +227,244 @@ if (!isset($_SESSION["login"])) {
                         <hr>
                     </div>
 
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="mb-2">
-                                <label for="product" class="form-label">Product <span id="x">*</span></label>
-                                <select name="product" id="product" class="form-select" required>
-                                    <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                </select>
-                            </div>
-
-                            <div class="mb-2">
-                                <label for="new_product" class="form-label">Add New Product</label>
-                                <input type="text" id="new_product" class="form-control" placeholder="Enter new product">
-                                <button id="add_product" class="btn btn-primary btn-sm mt-2">Add</button>
-                            </div>
+                    
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="mb-2">
+                            <label for="product" class="form-label">Product <span id="x">*</span></label>
+                            <select name="product" id="product" class="form-select" required>
+                                <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
+                            </select>
                         </div>
 
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const productSelect = document.getElementById('product');
+                        <div class="mb-2">
+                            <label for="new_product" class="form-label">Add New Product</label>
+                            <div class="d-flex">
+                                <input type="text" id="new_product" class="form-control" placeholder="Enter new product">
+                                <button id="add_product" class="btn btn-primary btn-sm ms-2">Add</button>
+                            </div>
+                        </div>
+                    </div>
 
-                                // Fetch options from JSON file and populate select dropdown
-                                fetch('product.json')
+                    <div id="remove-buttons-container" class="remove-buttons-container">
+                        <!-- Tombol remove untuk produk akan muncul di sini -->
+                    </div>
+
+                    <style>
+                        
+                    </style>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const productSelect = document.getElementById('product');
+                            const newProductInput = document.getElementById('new_product');
+                            const addProductBtn = document.getElementById('add_product');
+                            const removeProductButtonsContainer = document.getElementById('remove-buttons-container');
+
+                            // Function to fetch products and populate select dropdowns
+                            function fetchProducts() {
+                                const timestamp = new Date().getTime(); // Unique timestamp to avoid cache
+                                fetch(`product.json?t=${timestamp}`)
                                     .then(response => response.json())
                                     .then(data => {
+                                        productSelect.innerHTML = '';
+                                        removeProductButtonsContainer.innerHTML = '';
+
                                         data.forEach(product => {
-                                            const option = document.createElement('option');
-                                            option.value = product;
-                                            option.textContent = product;
-                                            productSelect.appendChild(option);
+                                            addProductOption(productSelect, product);
+                                            addRemoveProductButton(product);
                                         });
                                     })
                                     .catch(error => console.error('Error fetching product data:', error));
+                            }
 
-                                // Add new option to the select dropdown and update the JSON file
-                                document.getElementById('add_product').addEventListener('click', function() {
-                                    const newProduct = document.getElementById('new_product').value.trim();
+                            // Function to add an option to the select element
+                            function addProductOption(selectElement, product) {
+                                const option = document.createElement('option');
+                                option.value = product;
+                                option.textContent = product;
+                                selectElement.appendChild(option);
+                            }
 
-                                    if (newProduct) {
-                                        // Add new option to the select dropdown
-                                        const option = document.createElement('option');
-                                        option.value = newProduct;
-                                        option.textContent = newProduct;
-                                        productSelect.appendChild(option);
-                                        productSelect.value = newProduct; // Select the newly added option
-
-                                        // Send the new option to the server to update the JSON file
-                                        fetch('update_product.php', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ product: newProduct })
-                                        })
-                                        .then(response => response.text())
-                                        .then(data => {
-                                            console.log(data);
-                                            alert('New product added successfully!');
-                                        })
-                                        .catch(error => console.error('Error updating JSON file:', error));
-                                    } else {
-                                        alert('Please enter a valid product.');
+                            // Function to add a remove button for each product
+                            function addRemoveProductButton(product) {
+                                const button = document.createElement('button');
+                                button.className = 'remove-button';
+                                button.textContent = `Remove ${product}`;
+                                button.onclick = function() {
+                                    if (confirm(`Are you sure you want to remove ${product}?`)) {
+                                        removeProduct(product);
                                     }
-                                });
+                                };
+                                removeProductButtonsContainer.appendChild(button);
+                            }
+
+                            // Add new product to the select dropdown and update the JSON file
+                            addProductBtn.addEventListener('click', function() {
+                                const newProduct = newProductInput.value.trim();
+
+                                if (newProduct) {
+                                    addProductOption(productSelect, newProduct);
+                                    addRemoveProductButton(newProduct);
+
+                                    fetch('update_product.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ action: 'add', product: newProduct })
+                                    })
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        console.log(data);
+                                        alert('New product added successfully!');
+                                        newProductInput.value = ''; // Clear the input
+                                        fetchProducts(); // Refresh products to ensure they are updated
+                                    })
+                                    .catch(error => console.error('Error updating JSON file:', error));
+                                } else {
+                                    alert('Please enter a valid product.');
+                                }
                             });
-                        </script>
 
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="mb-2">
-                                <label for="armada" class="form-label">Vessel / Fuel Truck <span id="x">*</span></label>
-                                <select name="armada" id="armada" class="form-select" required>
-                                    <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                </select>
-                            </div>
+                            // Function to remove a product
+                            function removeProduct(product) {
+                                fetch('update_product.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ action: 'remove', product: product })
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    console.log(data);
+                                    alert('Product removed successfully!');
+                                    fetchProducts(); // Reload the products
+                                })
+                                .catch(error => console.error('Error updating JSON file:', error));
+                            }
 
-                            <div class="mb-2">
-                                <label for="new_armada" class="form-label">Add New Vessel / Fuel Truck</label>
+                            // Load the products when the page is loaded
+                            fetchProducts();
+                        });
+                    </script>
+
+
+
+                    
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
+                        <div class="mb-2">
+                            <label for="armada" class="form-label">Vessel / Fuel Truck <span id="x">*</span></label>
+                            <select name="armada" id="armada" class="form-select" required>
+                                <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
+                            </select>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="new_armada" class="form-label">Add New Vessel / Fuel Truck</label>
+                            <div class="d-flex">
                                 <input type="text" id="new_armada" class="form-control" placeholder="Enter new option">
-                                <button id="add_armada" class="btn btn-primary btn-sm mt-2">Add</button>
+                                <button id="add_armada" class="btn btn-primary btn-sm ms-2">Add</button>
                             </div>
                         </div>
 
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const armadaSelect = document.getElementById('armada');
+                        <div id="remove-armada-buttons-container" class="remove-buttons-container">
+                            <!-- Tombol remove untuk armada akan muncul di sini -->
+                        </div>
+                    </div>
 
-                                // Fetch options from JSON file and populate select dropdown
-                                fetch('armada.json')
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const armadaSelect = document.getElementById('armada');
+                            const removeArmadaButtonsContainer = document.getElementById('remove-armada-buttons-container');
+
+                            function fetchArmadaOptions() {
+                                fetch('armada.json?v=' + Date.now()) // Cache-busting parameter
                                     .then(response => response.json())
                                     .then(data => {
+                                        armadaSelect.innerHTML = '';
+                                        removeArmadaButtonsContainer.innerHTML = '';
+
                                         data.forEach(armada => {
-                                            const option = document.createElement('option');
-                                            option.value = armada;
-                                            option.textContent = armada;
-                                            armadaSelect.appendChild(option);
+                                            addArmadaOption(armadaSelect, armada);
+                                            addRemoveArmadaButton(armada);
                                         });
                                     })
                                     .catch(error => console.error('Error fetching armada data:', error));
+                            }
 
-                                // Add new option to the select dropdown and update the JSON file
-                                document.getElementById('add_armada').addEventListener('click', function() {
-                                    const newArmada = document.getElementById('new_armada').value.trim();
+                            function addArmadaOption(selectElement, armada) {
+                                const option = document.createElement('option');
+                                option.value = armada;
+                                option.textContent = armada;
+                                selectElement.appendChild(option);
+                            }
 
-                                    if (newArmada) {
-                                        // Add new option to the select dropdown
-                                        const option = document.createElement('option');
-                                        option.value = newArmada;
-                                        option.textContent = newArmada;
-                                        armadaSelect.appendChild(option);
-                                        armadaSelect.value = newArmada; // Select the newly added option
-
-                                        // Send the new option to the server to update the JSON file
-                                        fetch('update_armada.php', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ armada: newArmada })
-                                        })
-                                        .then(response => response.text())
-                                        .then(data => {
-                                            console.log(data);
-                                            alert('New option added successfully!');
-                                        })
-                                        .catch(error => console.error('Error updating JSON file:', error));
-                                    } else {
-                                        alert('Please enter a valid option.');
+                            function addRemoveArmadaButton(armada) {
+                                const button = document.createElement('button');
+                                button.className = 'remove-button';
+                                button.textContent = `Remove ${armada}`;
+                                button.onclick = function() {
+                                    if (confirm(`Are you sure you want to remove ${armada}?`)) {
+                                        removeArmada(armada);
                                     }
-                                });
-                            });
-                        </script>
+                                };
+                                removeArmadaButtonsContainer.appendChild(button);
+                            }
 
-                    </div>
-                    <div class="row">
+                            document.getElementById('add_armada').addEventListener('click', function() {
+                                const newArmada = document.getElementById('new_armada').value.trim();
+
+                                if (newArmada) {
+                                    addArmadaOption(armadaSelect, newArmada);
+                                    addRemoveArmadaButton(newArmada);
+
+                                    fetch('update_armada.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ action: 'add', armada: newArmada })
+                                    })
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        console.log(data);
+                                        alert('New option added successfully!');
+                                        document.getElementById('new_armada').value = ''; // Clear the input
+                                        fetchArmadaOptions(); // Refresh options to ensure they are updated
+                                    })
+                                    .catch(error => console.error('Error updating JSON file:', error));
+                                } else {
+                                    alert('Please enter a valid option.');
+                                }
+                            });
+
+                            function removeArmada(armada) {
+                                fetch('update_armada.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ action: 'remove', armada: armada })
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    console.log(data);
+                                    alert('Option removed successfully!');
+                                    fetchArmadaOptions(); // Reload the armada options
+                                })
+                                .catch(error => console.error('Error updating JSON file:', error));
+                            }
+
+                            // Load the armada options when the page is loaded
+                            fetchArmadaOptions();
+                        });
+                    </script>
+
+
+                    
+                    <div class="row mt-2">
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="mb-2">
                                 <label for="quantity" class="form-label">Quantity <span id="x">*</span></label>
@@ -376,7 +522,7 @@ if (!isset($_SESSION["login"])) {
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="mb-2">
                                 <label for="loading_port" class="form-label">Loading Port <span id="x">*</span></label>
@@ -384,10 +530,8 @@ if (!isset($_SESSION["login"])) {
                                     <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
                                 </select>
                             </div>
-
-                            
                         </div>
-                        
+
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="mb-2">
                                 <label for="discharging_port" class="form-label">Discharging Port <span id="x">*</span></label>
@@ -406,68 +550,104 @@ if (!isset($_SESSION["login"])) {
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div id="remove-port-buttons-container" class="remove-buttons-container">
+                        <!-- Tombol remove untuk port akan muncul di sini -->
                     </div>
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
                             const loadingPortSelect = document.getElementById('loading_port');
                             const dischargingPortSelect = document.getElementById('discharging_port');
+                            const removePortButtonsContainer = document.getElementById('remove-port-buttons-container');
 
-                            // Fetch options from the unified JSON file and populate select dropdowns
-                            fetch('ports.json')
-                                .then(response => response.json())
-                                .then(data => {
-                                    data.forEach(port => {
-                                        const optionLoading = document.createElement('option');
-                                        optionLoading.value = port;
-                                        optionLoading.textContent = port;
-                                        loadingPortSelect.appendChild(optionLoading);
+                            function fetchPorts() {
+                                fetch('ports.json?v=' + Date.now()) // Cache-busting parameter
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        loadingPortSelect.innerHTML = '';
+                                        dischargingPortSelect.innerHTML = '';
+                                        removePortButtonsContainer.innerHTML = '';
 
-                                        const optionDischarging = document.createElement('option');
-                                        optionDischarging.value = port;
-                                        optionDischarging.textContent = port;
-                                        dischargingPortSelect.appendChild(optionDischarging);
-                                    });
-                                })
-                                .catch(error => console.error('Error fetching port data:', error));
+                                        data.forEach(port => {
+                                            addPortOption(loadingPortSelect, port);
+                                            addPortOption(dischargingPortSelect, port);
+                                            addRemovePortButton(port);
+                                        });
+                                    })
+                                    .catch(error => console.error('Error fetching port data:', error));
+                            }
 
-                            // Add new port to the select dropdowns and update the JSON file
+                            function addPortOption(selectElement, port) {
+                                const option = document.createElement('option');
+                                option.value = port;
+                                option.textContent = port;
+                                selectElement.appendChild(option);
+                            }
+
+                            function addRemovePortButton(port) {
+                                const button = document.createElement('button');
+                                button.className = 'remove-button';
+                                button.textContent = `Remove ${port}`;
+                                button.onclick = function() {
+                                    if (confirm(`Are you sure you want to remove ${port}?`)) {
+                                        removePort(port);
+                                    }
+                                };
+                                removePortButtonsContainer.appendChild(button);
+                            }
+
                             document.getElementById('add_port').addEventListener('click', function() {
                                 const newPort = document.getElementById('new_port').value.trim();
 
                                 if (newPort) {
-                                    const optionLoading = document.createElement('option');
-                                    optionLoading.value = newPort;
-                                    optionLoading.textContent = newPort;
-                                    loadingPortSelect.appendChild(optionLoading);
-                                    loadingPortSelect.value = newPort;
-
-                                    const optionDischarging = document.createElement('option');
-                                    optionDischarging.value = newPort;
-                                    optionDischarging.textContent = newPort;
-                                    dischargingPortSelect.appendChild(optionDischarging);
-                                    dischargingPortSelect.value = newPort;
+                                    addPortOption(loadingPortSelect, newPort);
+                                    addPortOption(dischargingPortSelect, newPort);
+                                    addRemovePortButton(newPort);
 
                                     fetch('update_port.php', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
-                                        body: JSON.stringify(newPort)
+                                        body: JSON.stringify({ action: 'add', port: newPort })
                                     })
                                     .then(response => response.text())
                                     .then(data => {
                                         console.log(data);
                                         alert('New port added successfully!');
+                                        document.getElementById('new_port').value = ''; // Clear the input
+                                        fetchPorts(); // Refresh options to ensure they are updated
                                     })
                                     .catch(error => console.error('Error updating JSON file:', error));
                                 } else {
                                     alert('Please enter a valid port.');
                                 }
                             });
+
+                            function removePort(port) {
+                                fetch('update_port.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ action: 'remove', port: port })
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                    console.log(data);
+                                    alert('Port removed successfully!');
+                                    fetchPorts(); // Reload the port options
+                                })
+                                .catch(error => console.error('Error updating JSON file:', error));
+                            }
+
+                            // Load the port options when the page is loaded
+                            fetchPorts();
                         });
                     </script>
+
 
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">

@@ -1,31 +1,41 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
+// Path to the JSON file
+$jsonFilePath = 'armada.json';
 
-    if (isset($data['armada'])) {
-        $newArmada = $data['armada'];
+// Get the input data
+$data = json_decode(file_get_contents('php://input'), true);
 
-        // Path to the JSON file
-        $jsonFilePath = 'armada.json';
+// Check action type
+$action = $data['action'] ?? '';
+$armada = $data['armada'] ?? '';
 
-        // Get existing data from the JSON file
-        $existingData = json_decode(file_get_contents($jsonFilePath), true);
+// Create the file if it does not exist
+if (!file_exists($jsonFilePath)) {
+    file_put_contents($jsonFilePath, json_encode([]));
+}
 
-        // Append the new option if it doesn't already exist
-        if (!in_array($newArmada, $existingData)) {
-            $existingData[] = $newArmada;
+$armadas = json_decode(file_get_contents($jsonFilePath), true);
 
-            // Save the updated data back to the JSON file
-            file_put_contents($jsonFilePath, json_encode($existingData, JSON_PRETTY_PRINT));
-
-            echo 'New option added successfully.';
-        } else {
-            echo 'Option already exists.';
-        }
+if ($action === 'add' && $armada) {
+    // Add armada if not already in the list
+    if (!in_array($armada, $armadas)) {
+        $armadas[] = $armada;
+        file_put_contents($jsonFilePath, json_encode($armadas, JSON_PRETTY_PRINT));
+        echo "Armada added successfully.";
     } else {
-        echo 'Invalid data.';
+        echo "Armada already exists.";
+    }
+} elseif ($action === 'remove' && $armada) {
+    // Remove armada if it exists in the list
+    if (($key = array_search($armada, $armadas)) !== false) {
+        unset($armadas[$key]);
+        $armadas = array_values($armadas); // Re-index array
+        file_put_contents($jsonFilePath, json_encode($armadas, JSON_PRETTY_PRINT));
+        echo "Armada removed successfully.";
+    } else {
+        echo "Armada not found.";
     }
 } else {
-    echo 'Invalid request method.';
+    echo "Invalid action or armada name.";
 }
 ?>

@@ -318,31 +318,43 @@ if (!isset($_SESSION["login"])) {
                             </div>
                             
                             <script>
-                                document.addEventListener('DOMContentLoaded', function() {
+                                document.addEventListener('DOMContentLoaded', function () {
                                     const productSelect = document.getElementById('product');
-                                
+                            
                                     // Ambil data PHP untuk product yang sudah dipilih
                                     const selectedProduct = '<?= $selectedProduct ?>'; // PHP variable for selected product
-                                
-                                    // Fetch options from the JSON file and populate select dropdown
-                                    fetch('product.json') // Assuming you have a JSON file named 'products.json'
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            data.forEach(product => {
-                                                const optionProduct = document.createElement('option');
-                                                optionProduct.value = product;
-                                                optionProduct.textContent = product;
-                                
-                                                // Mark as selected if it matches the current value from the database
-                                                if (product === selectedProduct) {
-                                                    optionProduct.selected = true;
-                                                }
-                                                productSelect.appendChild(optionProduct);
-                                            });
-                                        })
-                                        .catch(error => console.error('Error fetching product data:', error));
+                            
+                                    // Fungsi untuk mengambil data dari JSON dan mengisi dropdown
+                                    function fetchProducts() {
+                                        fetch('product.json')
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                // Kosongkan dropdown sebelum menambahkan opsi baru
+                                                productSelect.innerHTML = '';
+                            
+                                                data.forEach(product => {
+                                                    const optionProduct = document.createElement('option');
+                                                    optionProduct.value = product;
+                                                    optionProduct.textContent = product;
+                            
+                                                    // Mark as selected if it matches the current value from the database
+                                                    if (product === selectedProduct) {
+                                                        optionProduct.selected = true;
+                                                    }
+                                                    productSelect.appendChild(optionProduct);
+                                                });
+                                            })
+                                            .catch(error => console.error('Error fetching product data:', error));
+                                    }
+                            
+                                    // Ambil data pertama kali saat halaman dimuat
+                                    fetchProducts();
+                            
+                                    // Set interval untuk mengupdate data setiap 5 detik (5000 milidetik)
+                                    setInterval(fetchProducts, 500);
                                 });
                             </script>
+                            
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="next_port" class="form-label">Next Port </label>

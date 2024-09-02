@@ -1,31 +1,41 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
+// Path to the JSON file
+$jsonFilePath = 'product.json';
 
-    if (isset($data['product'])) {
-        $newProduct = $data['product'];
+// Get the input data
+$data = json_decode(file_get_contents('php://input'), true);
 
-        // Path to the JSON file
-        $jsonFilePath = 'product.json';
+// Check action type
+$action = $data['action'] ?? '';
+$product = $data['product'] ?? '';
 
-        // Get existing data from the JSON file
-        $existingData = json_decode(file_get_contents($jsonFilePath), true);
+// Create the file if it does not exist
+if (!file_exists($jsonFilePath)) {
+    file_put_contents($jsonFilePath, json_encode([]));
+}
 
-        // Append the new product if it doesn't already exist
-        if (!in_array($newProduct, $existingData)) {
-            $existingData[] = $newProduct;
+$products = json_decode(file_get_contents($jsonFilePath), true);
 
-            // Save the updated data back to the JSON file
-            file_put_contents($jsonFilePath, json_encode($existingData, JSON_PRETTY_PRINT));
-
-            echo 'New product added successfully.';
-        } else {
-            echo 'Product already exists.';
-        }
+if ($action === 'add' && $product) {
+    // Add product if not already in the list
+    if (!in_array($product, $products)) {
+        $products[] = $product;
+        file_put_contents($jsonFilePath, json_encode($products, JSON_PRETTY_PRINT));
+        echo "Product added successfully.";
     } else {
-        echo 'Invalid data.';
+        echo "Product already exists.";
+    }
+} elseif ($action === 'remove' && $product) {
+    // Remove product if it exists in the list
+    if (($key = array_search($product, $products)) !== false) {
+        unset($products[$key]);
+        $products = array_values($products); // Re-index array
+        file_put_contents($jsonFilePath, json_encode($products, JSON_PRETTY_PRINT));
+        echo "Product removed successfully.";
+    } else {
+        echo "Product not found.";
     }
 } else {
-    echo 'Invalid request method.';
+    echo "Invalid action or product name.";
 }
 ?>

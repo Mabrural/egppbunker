@@ -169,8 +169,8 @@ if (!isset($_SESSION["login"])) {
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="mb-2">
-                                <label for="po_number" class="form-label">Purchase Order No <span id="x">*</span></label>
-                                <input type="text" class="form-control" name="po_number" id="po_number" value="<?= $delivery['po_number']?>" required>
+                                <label for="po_number" class="form-label">Purchase Order No </label>
+                                <input type="text" class="form-control" name="po_number" id="po_number" value="<?= $delivery['po_number']?>">
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">

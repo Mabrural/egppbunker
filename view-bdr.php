@@ -85,69 +85,10 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="discharging_port" class="form-label">Delivered at <span id="x">*</span></label>
-                                    <select id="discharging_port" class="form-select" disabled>
-                                        <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                    </select>
+                                    <input type="text" value="<?= $selectedDischargingPort?>" class="form-control" disabled>
                                 </div>
                             </div>
                             
-                            <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const dischargingPortSelect = document.getElementById('discharging_port');
-                            
-                                // Ambil data PHP untuk port yang sudah dipilih
-                                const selectedDischargingPort = '<?= $selectedDischargingPort ?>'; // PHP variable for selected discharging port
-                            
-                                // Fetch options from the JSON file and populate select dropdowns
-                                fetch('ports.json')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        data.forEach(port => {
-                                            const optionDischarging = document.createElement('option');
-                                            optionDischarging.value = port;
-                                            optionDischarging.textContent = port;
-                            
-                                            // Mark as selected if it matches the current value from the database
-                                            if (port === selectedDischargingPort) {
-                                                optionDischarging.selected = true;
-                                            }
-                                            dischargingPortSelect.appendChild(optionDischarging);
-                                        });
-                                    })
-                                    .catch(error => console.error('Error fetching port data:', error));
-                            
-                                // Add new port to the select dropdown and update the JSON file
-                                document.getElementById('add_port').addEventListener('click', function() {
-                                    const newPort = document.getElementById('new_port').value.trim();
-                            
-                                    if (newPort) {
-                                        // Add new option to the select dropdown
-                                        const optionDischarging = document.createElement('option');
-                                        optionDischarging.value = newPort;
-                                        optionDischarging.textContent = newPort;
-                                        dischargingPortSelect.appendChild(optionDischarging);
-                                        dischargingPortSelect.value = newPort; // Select the newly added option
-                            
-                                        // Send the new option to the server to update the JSON file
-                                        fetch('update_port.php', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ port: newPort })
-                                        })
-                                        .then(response => response.text())
-                                        .then(data => {
-                                            console.log(data);
-                                            alert('New port added successfully!');
-                                        })
-                                        .catch(error => console.error('Error updating JSON file:', error));
-                                    } else {
-                                        alert('Please enter a valid port.');
-                                    }
-                                });
-                            });
-                            </script>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="do_date" class="form-label">Date </label>
@@ -165,9 +106,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 <div class="mb-2">
                                     <label for="vessel_cust" class="form-label">Vessel's Name <span id="x">*</span></label>
-                                    <select name="vessel_cust" id="vessel_cust" class="form-select" required disabled>
-                                        <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                    </select>
+                                    <input type="text" value="<?= $selectedVessel?>" class="form-control" disabled>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
@@ -175,94 +114,11 @@ if (!isset($_SESSION["login"])) {
                                     <label for="new_vessel" class="form-label">Add New Vessel</label>
                                     <div class="d-flex">
                                         <input type="text" id="new_vessel" class="form-control" placeholder="Enter new vessel" disabled>
-                                        <button id="add_vessel" class="btn btn-primary btn-sm ms-2 btn disabled">Add</button>
+                                        <button id="add_vessel" class="btn btn-primary btn-sm ms-2 disabled" disabled>Add</button>
                                     </div>
                                 </div>
                             </div>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    // Load existing vessels from JSON file
-                                    loadVessels();
-                                    
-                                    document.getElementById('add_vessel').addEventListener('click', function() {
-                                        const newVesselInput = document.getElementById('new_vessel');
-                                        const newVesselName = newVesselInput.value.trim();
-                                
-                                        if (newVesselName === '') {
-                                            alert('Please enter a vessel name.');
-                                            return;
-                                        }
-                                
-                                        const formData = new FormData();
-                                        formData.append('vessel_name', newVesselName);
-                                
-                                        fetch('update_vessel.php', {
-                                            method: 'POST',
-                                            body: formData
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.status === 'success') {
-                                                // Update the dropdown with the new vessel
-                                                updateVesselDropdown(newVesselName);
-                                                newVesselInput.value = ''; // Clear the input field
-                                
-                                                // Show success alert
-                                                alert(data.message); // Use the message from the server response
-                                            } else {
-                                                alert(data.message); // Show error message from server response
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                            alert('An error occurred while adding the vessel.');
-                                        });
-                                    });
-                                });
-                                
-                                function loadVessels() {
-                                    fetch('vessel.json')
-                                        .then(response => response.json())
-                                        .then(vessels => {
-                                            const vesselSelect = document.getElementById('vessel_cust');
-                                            vesselSelect.innerHTML = ''; // Clear existing options
-                                            
-                                            // Retrieve the selected vessel from PHP
-                                            const selectedVessel = '<?php echo $selectedVessel; ?>';
-                                
-                                            vessels.forEach(vessel => {
-                                                // Create new option
-                                                const option = document.createElement('option');
-                                                option.value = vessel;
-                                                option.text = vessel;
-                                
-                                                // Set selected option
-                                                if (vessel === selectedVessel) {
-                                                    option.selected = true;
-                                                }
-                                
-                                                // Add new option to the dropdown
-                                                vesselSelect.add(option);
-                                            });
-                                        })
-                                        .catch(error => {
-                                            console.error('Error loading vessels:', error);
-                                            alert('An error occurred while loading vessels.');
-                                        });
-                                }
-                                
-                                function updateVesselDropdown(newVesselName) {
-                                    const vesselSelect = document.getElementById('vessel_cust');
-                                    
-                                    // Create new option
-                                    const newOption = document.createElement('option');
-                                    newOption.value = newVesselName;
-                                    newOption.text = newVesselName;
-                                
-                                    // Add new option to the dropdown
-                                    vesselSelect.add(newOption);
-                                }
-                            </script>  
+  
                         </div>
 
                         <div class="row">
@@ -387,7 +243,7 @@ if (!isset($_SESSION["login"])) {
 
                                 <div class="mb-2">
                                     <label for="net_metric_ton" class="form-label">Net Metric Tons</label>
-                                    <input type="text" id="net_metric_ton" name="net_metric_ton" class="form-control" value="<?= number_format(($quantity * $wcf / 1000), 0, ',', '.') ?>" disabled>
+                                    <input type="text" id="net_metric_ton" name="net_metric_ton" class="form-control" value="<?= number_format(($quantity * $wcf / 1000), 3, '.', '.') ?>" disabled>
                                 </div>
 
                                 <div class="mb-2">

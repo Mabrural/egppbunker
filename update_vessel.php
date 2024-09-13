@@ -3,19 +3,24 @@
 
 header('Content-Type: application/json');
 
-// Path ke file JSON
+// Path to the JSON file
 $json_file = 'vessel.json';
 
-// Ambil data POST
-$new_vessel_name = isset($_POST['vessel_name']) ? trim($_POST['vessel_name']) : '';
+// Get the raw POST data
+$request_body = file_get_contents('php://input');
+$data = json_decode($request_body, true);
 
-// Validasi input
-if (empty($new_vessel_name)) {
-    echo json_encode(['status' => 'error', 'message' => 'Vessel name cannot be empty.']);
+// Check if action is provided and determine the action type (add or remove)
+$action = isset($data['action']) ? $data['action'] : '';
+$vessel_name = isset($data['vessel']) ? trim($data['vessel']) : '';
+
+// Validate input
+if (empty($action) || empty($vessel_name)) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
     exit;
 }
 
-// Baca file JSON
+// Read the JSON file
 if (!file_exists($json_file)) {
     echo json_encode(['status' => 'error', 'message' => 'File not found.']);
     exit;
@@ -24,17 +29,41 @@ if (!file_exists($json_file)) {
 $json_data = file_get_contents($json_file);
 $vessels = json_decode($json_data, true);
 
-// Tambahkan vessel baru jika belum ada
-if (!in_array($new_vessel_name, $vessels)) {
-    $vessels[] = $new_vessel_name;
+if ($action === 'add') {
+    // Add new vessel if it doesn't already exist
+    if (!in_array($vessel_name, $vessels)) {
+        $vessels[] = $vessel_name;
 
-    // Simpan kembali ke file JSON
-    if (file_put_contents($json_file, json_encode($vessels, JSON_PRETTY_PRINT))) {
-        echo json_encode(['status' => 'success', 'message' => 'Vessel added successfully.']);
+        // Save the updated list back to the JSON file
+        if (file_put_contents($json_file, json_encode($vessels, JSON_PRETTY_PRINT))) {
+            echo json_encode(['status' => 'success', 'message' => 'Vessel added successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update file.']);
+        }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to update file.']);
+        echo json_encode(['status' => 'error', 'message' => 'Vessel already exists.']);
+    }
+} elseif ($action === 'remove') {
+    // Remove vessel if it exists
+    if (in_array($vessel_name, $vessels)) {
+        // Remove the vessel from the array
+        $vessels = array_filter($vessels, function($vessel) use ($vessel_name) {
+            return $vessel !== $vessel_name;
+        });
+
+        // Re-index the array to maintain sequential keys
+        $vessels = array_values($vessels);
+
+        // Save the updated list back to the JSON file
+        if (file_put_contents($json_file, json_encode($vessels, JSON_PRETTY_PRINT))) {
+            echo json_encode(['status' => 'success', 'message' => 'Vessel removed successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update file.']);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Vessel not found.']);
     }
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Vessel already exists.']);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid action.']);
 }
 ?>

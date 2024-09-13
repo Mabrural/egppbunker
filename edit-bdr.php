@@ -58,7 +58,7 @@ if (!isset($_SESSION["login"])) {
                 swal.fire({
                     
                     title               : 'Failed',
-                    text                : 'Failed to updatex BDR!',
+                    text                : 'Failed to update BDR!',
                     icon                : 'error',
                     timer               : 2000,
                     showConfirmButton   : false
@@ -86,6 +86,33 @@ if (!isset($_SESSION["login"])) {
     span#x{
         color: red;
     }
+
+    .remove-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.remove-buttons-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.remove-button {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: left;
+}
 </style>
 
 <body>
@@ -126,76 +153,17 @@ if (!isset($_SESSION["login"])) {
                         <input type="hidden" name="do_id" value="<?= $bdr['do_id']?>">
                         <div class="mb-2">
                             <label for="bdr_no" class="form-label">BDR No <span id="x">*</span></label>
-                            <input type="text" class="form-control" name="bdr_no" id="bdr_no" value="<?= $bdr['bdr_no'] ?>" readonly>
+                            <input type="text" class="form-control" name="bdr_no" id="bdr_no" value="<?= $bdr['bdr_no'] ?>" >
                         </div>
 
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="discharging_port" class="form-label">Delivered at <span id="x">*</span></label>
-                                    <select id="discharging_port" class="form-select" disabled>
-                                        <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
-                                    </select>
+                                    <input type="text" value="<?= $selectedDischargingPort?>" class="form-control" disabled>
                                 </div>
                             </div>
                             
-                            <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const dischargingPortSelect = document.getElementById('discharging_port');
-                            
-                                // Ambil data PHP untuk port yang sudah dipilih
-                                const selectedDischargingPort = '<?= $selectedDischargingPort ?>'; // PHP variable for selected discharging port
-                            
-                                // Fetch options from the JSON file and populate select dropdowns
-                                fetch('ports.json')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        data.forEach(port => {
-                                            const optionDischarging = document.createElement('option');
-                                            optionDischarging.value = port;
-                                            optionDischarging.textContent = port;
-                            
-                                            // Mark as selected if it matches the current value from the database
-                                            if (port === selectedDischargingPort) {
-                                                optionDischarging.selected = true;
-                                            }
-                                            dischargingPortSelect.appendChild(optionDischarging);
-                                        });
-                                    })
-                                    .catch(error => console.error('Error fetching port data:', error));
-                            
-                                // Add new port to the select dropdown and update the JSON file
-                                document.getElementById('add_port').addEventListener('click', function() {
-                                    const newPort = document.getElementById('new_port').value.trim();
-                            
-                                    if (newPort) {
-                                        // Add new option to the select dropdown
-                                        const optionDischarging = document.createElement('option');
-                                        optionDischarging.value = newPort;
-                                        optionDischarging.textContent = newPort;
-                                        dischargingPortSelect.appendChild(optionDischarging);
-                                        dischargingPortSelect.value = newPort; // Select the newly added option
-                            
-                                        // Send the new option to the server to update the JSON file
-                                        fetch('update_port.php', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ port: newPort })
-                                        })
-                                        .then(response => response.text())
-                                        .then(data => {
-                                            console.log(data);
-                                            alert('New port added successfully!');
-                                        })
-                                        .catch(error => console.error('Error updating JSON file:', error));
-                                    } else {
-                                        alert('Please enter a valid port.');
-                                    }
-                                });
-                            });
-                            </script>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="do_date" class="form-label">Date </label>
@@ -212,8 +180,9 @@ if (!isset($_SESSION["login"])) {
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 <div class="mb-2">
-                                    <label for="vessel_cust" class="form-label">Vessel's Name <span id="x">*</span></label>
-                                    <select name="vessel_cust" id="vessel_cust" class="form-select" required>
+                                    <label for="vessel_cust" class="form-label">Vessel's Name</label>
+                                    <select name="vessel_cust" id="vessel_cust" class="form-select">
+                                        <option value="" selected>Select a vessel</option>
                                         <!-- Opsi-opsi dari JSON akan ditambahkan di sini -->
                                     </select>
                                 </div>
@@ -227,90 +196,126 @@ if (!isset($_SESSION["login"])) {
                                     </div>
                                 </div>
                             </div>
+
+                            <div id="remove-vessel-buttons-container" class="remove-buttons-container">
+                                <!-- Tombol remove untuk vessel akan muncul di sini -->
+                            </div>
+
                             <script>
                                 document.addEventListener('DOMContentLoaded', function() {
-                                    // Load existing vessels from JSON file
-                                    loadVessels();
-                                    
-                                    document.getElementById('add_vessel').addEventListener('click', function() {
-                                        const newVesselInput = document.getElementById('new_vessel');
-                                        const newVesselName = newVesselInput.value.trim();
-                                
-                                        if (newVesselName === '') {
-                                            alert('Please enter a vessel name.');
-                                            return;
+                                    const vesselSelect = document.getElementById('vessel_cust');
+                                    const newVesselInput = document.getElementById('new_vessel');
+                                    const addVesselBtn = document.getElementById('add_vessel');
+                                    const removeVesselButtonsContainer = document.getElementById('remove-vessel-buttons-container');
+
+                                    // Retrieve the selected vessel from PHP
+                                    const selectedVessel = '<?php echo isset($selectedVessel) ? htmlspecialchars($selectedVessel, ENT_QUOTES) : ''; ?>'; // Escape the PHP variable for safety
+
+                                    // Function to fetch vessels and populate the select dropdown
+                                    function fetchVessels() {
+                                        const timestamp = new Date().getTime(); // Unique timestamp to avoid cache
+                                        fetch(`vessel.json?t=${timestamp}`)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                vesselSelect.innerHTML = '<option value="" selected>Select a vessel</option>';
+                                                removeVesselButtonsContainer.innerHTML = '';
+
+                                                data.forEach(vessel => {
+                                                    addVesselOption(vesselSelect, vessel);
+                                                    addRemoveVesselButton(vessel);
+                                                });
+
+                                                // Set the selected vessel in the dropdown if it matches the selectedVessel value from PHP
+                                                setSelectedVessel();
+                                            })
+                                            .catch(error => console.error('Error fetching vessel data:', error));
+                                    }
+
+                                    // Function to add an option to the select element
+                                    function addVesselOption(selectElement, vessel) {
+                                        const option = document.createElement('option');
+                                        option.value = vessel;
+                                        option.textContent = vessel;
+                                        selectElement.appendChild(option);
+                                    }
+
+                                    // Function to add a remove button for each vessel
+                                    function addRemoveVesselButton(vessel) {
+                                        const button = document.createElement('button');
+                                        button.className = 'remove-button';
+                                        button.textContent = `Remove ${vessel}`;
+                                        button.onclick = function() {
+                                            if (confirm(`Are you sure you want to remove ${vessel}?`)) {
+                                                removeVessel(vessel);
+                                            }
+                                        };
+                                        removeVesselButtonsContainer.appendChild(button);
+                                    }
+
+                                    // Add new vessel to the select dropdown and update the JSON file
+                                    addVesselBtn.addEventListener('click', function() {
+                                        const newVessel = newVesselInput.value.trim();
+
+                                        if (newVessel) {
+                                            addVesselOption(vesselSelect, newVessel);
+                                            addRemoveVesselButton(newVessel);
+
+                                            fetch('update_vessel.php', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify({ action: 'add', vessel: newVessel })
+                                            })
+                                            .then(response => response.text())
+                                            .then(data => {
+                                                console.log(data);
+                                                alert('New vessel added successfully!');
+                                                newVesselInput.value = ''; // Clear the input
+                                                fetchVessels(); // Refresh vessels to ensure they are updated
+                                            })
+                                            .catch(error => console.error('Error updating JSON file:', error));
+                                        } else {
+                                            alert('Please enter a valid vessel.');
                                         }
-                                
-                                        const formData = new FormData();
-                                        formData.append('vessel_name', newVesselName);
-                                
+                                    });
+
+                                    // Function to remove a vessel
+                                    function removeVessel(vessel) {
                                         fetch('update_vessel.php', {
                                             method: 'POST',
-                                            body: formData
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ action: 'remove', vessel: vessel })
                                         })
-                                        .then(response => response.json())
+                                        .then(response => response.text())
                                         .then(data => {
-                                            if (data.status === 'success') {
-                                                // Update the dropdown with the new vessel
-                                                updateVesselDropdown(newVesselName);
-                                                newVesselInput.value = ''; // Clear the input field
-                                
-                                                // Show success alert
-                                                alert(data.message); // Use the message from the server response
-                                            } else {
-                                                alert(data.message); // Show error message from server response
-                                            }
+                                            console.log(data);
+                                            alert('Vessel removed successfully!');
+                                            fetchVessels(); // Reload the vessels
                                         })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                            alert('An error occurred while adding the vessel.');
-                                        });
-                                    });
-                                });
-                                
-                                function loadVessels() {
-                                    fetch('vessel.json')
-                                        .then(response => response.json())
-                                        .then(vessels => {
-                                            const vesselSelect = document.getElementById('vessel_cust');
-                                            vesselSelect.innerHTML = ''; // Clear existing options
-                                            
-                                            // Retrieve the selected vessel from PHP
-                                            const selectedVessel = '<?php echo $selectedVessel; ?>';
-                                
-                                            vessels.forEach(vessel => {
-                                                // Create new option
-                                                const option = document.createElement('option');
-                                                option.value = vessel;
-                                                option.text = vessel;
-                                
-                                                // Set selected option
-                                                if (vessel === selectedVessel) {
-                                                    option.selected = true;
+                                        .catch(error => console.error('Error updating JSON file:', error));
+                                    }
+
+                                    // Function to set the selected vessel
+                                    function setSelectedVessel() {
+                                        if (selectedVessel) {
+                                            const options = vesselSelect.options;
+                                            for (let i = 0; i < options.length; i++) {
+                                                if (options[i].value === selectedVessel) {
+                                                    options[i].selected = true;
+                                                    break;
                                                 }
-                                
-                                                // Add new option to the dropdown
-                                                vesselSelect.add(option);
-                                            });
-                                        })
-                                        .catch(error => {
-                                            console.error('Error loading vessels:', error);
-                                            alert('An error occurred while loading vessels.');
-                                        });
-                                }
-                                
-                                function updateVesselDropdown(newVesselName) {
-                                    const vesselSelect = document.getElementById('vessel_cust');
-                                    
-                                    // Create new option
-                                    const newOption = document.createElement('option');
-                                    newOption.value = newVesselName;
-                                    newOption.text = newVesselName;
-                                
-                                    // Add new option to the dropdown
-                                    vesselSelect.add(newOption);
-                                }
-                            </script>   
+                                            }
+                                        }
+                                    }
+
+                                    // Load the vessels when the page is loaded
+                                    fetchVessels();
+                                });
+                            </script>
+                            
                         </div>
 
                         <div class="row">
@@ -435,23 +440,23 @@ if (!isset($_SESSION["login"])) {
 
                                 <div class="mb-2">
                                     <label for="net_metric_ton" class="form-label">Net Metric Tons</label>
-                                    <input type="text" id="net_metric_ton" name="net_metric_ton" class="form-control" value="<?= number_format(($quantity * $wcf / 1000), 0, ',', '.') ?>" readonly>
+                                    <input type="text" id="net_metric_ton" name="net_metric_ton" class="form-control" value="<?= number_format(($quantity * $wcf / 1000), 3, '.', '.') ?>" readonly>
                                 </div>
 
                                 <script>
                                     function updateNetMetricTon() {
                                         // Ambil nilai W.C.F dari input
                                         let wcf = parseFloat(document.getElementById('wcf').value) || 0;
-                                        
+
                                         // Ambil nilai quantity dari PHP
                                         let quantity = <?= $quantity ?>;
-                                        
+
                                         // Hitung Net Metric Tons
-                                        let netMetricTon = (quantity * wcf / 1000).toFixed(0);
-                                        
-                                        // Format angka menjadi ribuan dengan titik (misal: 1.000)
+                                        let netMetricTon = (quantity * wcf / 1000).toFixed(3);
+
+                                        // Format angka menjadi ribuan dengan titik (misal: 1.000,00)
                                         netMetricTon = netMetricTon.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                                        
+
                                         // Update input Net Metric Tons
                                         document.getElementById('net_metric_ton').value = netMetricTon;
                                     }

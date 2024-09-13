@@ -86,7 +86,7 @@ function formatNumber($number) {
                 echo "<tr><th>Flash Point</th><td>" . displayValue($row['flashpoint']) . "</td></tr>";
                 echo "<tr><th>Sulphur</th><td>" . displayValue($row['sulphur']) . "</td></tr>";
                 echo "<tr><th>Water Content</th><td>" . displayValue($row['water_content']) . "</td></tr>";
-                echo "<tr><th>Net Metric Ton</th><td>" . formatNumber($row['net_metric_ton']) . "</td></tr>";
+                echo "<tr><th>Net Metric Ton</th><td>" . number_format($row['net_metric_ton'], 3, '.', ',') . "</td></tr>";
                 echo "<tr><th>VCF</th><td>" . displayValue($row['vcf']) . "</td></tr>";
                 echo "<tr><th>WCF</th><td>" . displayValue($row['wcf']) . "</td></tr>";
                 echo "<tr><th>Temperature</th><td>" . displayValue($row['temp']) . "</td></tr>";

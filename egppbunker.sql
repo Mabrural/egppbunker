@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 13, 2024 at 06:31 AM
+-- Generation Time: Sep 13, 2024 at 11:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,13 +46,6 @@ CREATE TABLE `bdr` (
   `table_52` varchar(10) NOT NULL,
   `table_1` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `bdr`
---
-
-INSERT INTO `bdr` (`id_bdr`, `do_id`, `bdr_no`, `delivered_by`, `vessel_cust`, `next_port`, `visc`, `density`, `flashpoint`, `sulphur`, `water_content`, `net_metric_ton`, `vcf`, `wcf`, `temp`, `table_52`, `table_1`) VALUES
-(39, 25, '006/BDR-GPP/IX/2024', 'By Bunker Services', '', '', '3.264', '0.849', '75.0', '0.005', '<0.0005', '42.395', '0.9891', '0.8479', '30.0', '6.293', '0.98421');
 
 -- --------------------------------------------------------
 
@@ -174,7 +167,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bdr`
 --
 ALTER TABLE `bdr`
-  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `customer`

@@ -85,7 +85,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="mb-2">
                                     <label for="discharging_port" class="form-label">Delivered at <span id="x">*</span></label>
-                                    <input type="text" value="<?= $selectedDischargingPort?>" class="form-control" disabled>
+                                    <input type="text" value="<?= $bdr['discharging_port']?>" class="form-control" disabled>
                                 </div>
                             </div>
                             
@@ -105,7 +105,7 @@ if (!isset($_SESSION["login"])) {
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 <div class="mb-2">
-                                    <label for="vessel_cust" class="form-label">Vessel's Name <span id="x">*</span></label>
+                                    <label for="vessel_cust" class="form-label">Vessel's Name </label>
                                     <input type="text" value="<?= $selectedVessel?>" class="form-control" disabled>
                                 </div>
                             </div>
@@ -333,23 +333,38 @@ if (!isset($_SESSION["login"])) {
     
                 // Bagian yang digeser ke kanan
                 let rightAlignedContent = '';
-                rightAlignedContent += `<div style="position: absolute; top: 30px; left: 755px;">${data.bdr_no}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 95px; left: 755px;">${data.delivered_by}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 158px; left: 755px;">${data.vessel_cust}</div>`;
+                // Ubah CSS bdr_no menjadi center
+                rightAlignedContent += `<div style="position: absolute; top: 155px; left: 50%; transform: translateX(-50%); font-weight: bold;">${data.bdr_no}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 220px; left: 805px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 250px; left: 805px;">${(data.vessel_cust ? data.vessel_cust : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 280px; left: 805px;">${(data.next_port ? data.next_port : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 320px; left: 805px;">${(data.departure_time ? data.departure_time : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 490px; left: 920px; text-align: right; width: 100px;">${data.quantity.toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 520px; left: 920px; text-align: right; width: 100px;">${(data.quantity / 1000).toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 550px; left: 920px; text-align: right; width: 100px;">${data.net_metric_ton.toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 615px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.vcf.toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 645px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.wcf.toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 675px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.temp.toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 705px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.table_52.toLocaleString('id-ID')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 735px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.table_1.toLocaleString('id-ID')}</div>`;
+
+                rightAlignedContent += `<div style="position: absolute; top: 1035px; left: 805px;">${(data.vessel_cust ? data.vessel_cust : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 1068px; left: 805px;">${data.delivered_by}</div>`;
+
     
                 let leftAlignedContent = '';
-                leftAlignedContent += `<div style="position: absolute; top: 333px; left: 155px;">${data.visc}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 395px; left: 155px;">${data.density}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 540px; left: 155px;">${data.flashpoint}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 540px; left: 755px; width: 300px;">${data.sulphur}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 600px; left: 155px;">${data.water_content}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 600px; left: 755px; width: 300px;">${formattedNetMetricTon}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 655px; left: 155px;">${data.vcf}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 655px; left: 755px; width: 300px;">${data.wcf}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 713px; left: 155px;">${data.temp}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 713px; left: 755px; width: 300px;">${data.table_52}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 768px; left: 155px;">${data.table_1}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 768px; left: 755px; width: 300px;">${(data.next_port ? data.next_port : 'next_port')}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 220px; left: 295px;">${data.discharging_port}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 250px; left: 295px;">${data.delivered_by}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 280px; left: 295px;">${data.product}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 320px; left: 295px;">${(data.commence_pump ? data.commence_pump : '&nbsp;')}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 365px; left: 295px;">${(data.finished_pump ? data.finished_pump : '&nbsp;')}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 500px; left: 395px;">${data.visc}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 560px; left: 395px;">${data.density}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 623px; left: 400px;">${data.flashpoint}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 683px; left: 395px;">${data.sulphur}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 747px; left: 385px;">${data.water_content}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 540px; left: 755px; width: 300px;">&nbsp;</div>`;
+
     
                 content += rightAlignedContent + '<br>' + leftAlignedContent;
     
@@ -363,7 +378,7 @@ if (!isset($_SESSION["login"])) {
     
                 // Menambahkan QR code untuk verifikasi
                 const qrCodeUrl = 'http://localhost/egppbunker/verify_bdr.php?id_bdr=' + id_bdr;
-                printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 140px; right: 20px;" />');
+                printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 70px; right: 20px;" />');
     
                 printWindow.document.write('</body></html>');
                 printWindow.document.close();
@@ -372,6 +387,7 @@ if (!isset($_SESSION["login"])) {
             .catch(error => console.error('Error:', error));
     }
 </script>
+
     
 
 </body>

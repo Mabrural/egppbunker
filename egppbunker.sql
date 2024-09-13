@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 02, 2024 at 06:44 AM
+-- Generation Time: Sep 13, 2024 at 06:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,7 +32,7 @@ CREATE TABLE `bdr` (
   `do_id` int(10) NOT NULL,
   `bdr_no` varchar(50) NOT NULL,
   `delivered_by` varchar(50) DEFAULT NULL,
-  `vessel_cust` varchar(60) NOT NULL,
+  `vessel_cust` varchar(60) DEFAULT NULL,
   `next_port` varchar(60) DEFAULT NULL,
   `visc` varchar(10) NOT NULL,
   `density` varchar(10) NOT NULL,
@@ -46,6 +46,13 @@ CREATE TABLE `bdr` (
   `table_52` varchar(10) NOT NULL,
   `table_1` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bdr`
+--
+
+INSERT INTO `bdr` (`id_bdr`, `do_id`, `bdr_no`, `delivered_by`, `vessel_cust`, `next_port`, `visc`, `density`, `flashpoint`, `sulphur`, `water_content`, `net_metric_ton`, `vcf`, `wcf`, `temp`, `table_52`, `table_1`) VALUES
+(39, 25, '006/BDR-GPP/IX/2024', 'By Bunker Services', '', '', '3.264', '0.849', '75.0', '0.005', '<0.0005', '42.395', '0.9891', '0.8479', '30.0', '6.293', '0.98421');
 
 -- --------------------------------------------------------
 
@@ -65,9 +72,9 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`id_customer`, `customer_name`, `address`) VALUES
 (1, 'PT HANSWAY INDONESIA', 'Jl. Duyung, Komp. Citra Super Mall Blok B No. 5-6 Harbour Bay - Batu Ampar, Batam 29432 Indonesia'),
-(4, 'PT MITO INDONESIA', 'Komp. The Centro Town House No. 20, Sukajadi'),
 (5, 'PT NUSA HALMAHERA MINERAL ', 'Jl. Pluit Utara Raya No. 53 RT10 RW05 Jakarta Utara, Jl. Pluit Utara Raya No. 53 RT10 RW05 Jakarta Utara'),
-(6, 'PT CITRA MARITIM', 'Sungai Panas, Batam Center');
+(7, 'PT CIWI SEMPURNA BETON', 'Jl. Raya Barelang KM. 02 Tembesi'),
+(8, 'PT SEASCAPE SURVEYS INDONESIA', 'The Manhattan Square-Mid Tower Lt. 7, Unit Jl. TB Simatupang Kav. 1S - Jakarta Selatan');
 
 -- --------------------------------------------------------
 
@@ -100,7 +107,8 @@ CREATE TABLE `delivery_order` (
 --
 
 INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `customer_id`, `product`, `armada`, `quantity`, `driver`, `departure_time`, `arrival_time`, `loading_port`, `discharging_port`, `commence_pump`, `finished_pump`, `seal_number1`, `seal_number2`) VALUES
-(23, '45000800', '001/DO-GPP/IX/2024', NULL, 5, 'Pertadex', 'TB Hary 02 & OB Hubmar 03', 1000000, '', '', '', 'Batam', 'Jakarta', '', '', '', '');
+(24, '24/PO-CSB/IX/006', '025/DO-GPP/IX/2024', NULL, 7, 'Biosolar', 'Truck', 10000, '', '', '', 'Batam', 'Trans Barelang', '', '', '', ''),
+(25, '', '026/DO-GPP/IX/2024', NULL, 8, 'Biosolar', 'By Bunker Service', 50000, '', '', '', 'Batam', 'Utraco - Batu Ampar', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -166,19 +174,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bdr`
 --
 ALTER TABLE `bdr`
-  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_customer` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `users`

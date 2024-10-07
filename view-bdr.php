@@ -335,7 +335,19 @@ if (!isset($_SESSION["login"])) {
                 let rightAlignedContent = '';
                 // Ubah CSS bdr_no menjadi center
                 rightAlignedContent += `<div style="position: absolute; top: 155px; left: 50%; transform: translateX(-50%); font-weight: bold;">${data.bdr_no}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 220px; left: 805px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
+                // rightAlignedContent += `<div style="position: absolute; top: 220px; left: 805px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 220px; left: 805px;">${(data.do_date ? formatDate(data.do_date) : '&nbsp;')}</div>`;
+                function formatDate(dateString) {
+                    const date = new Date(dateString);
+                    if (!isNaN(date)) {
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        return `${day}-${month}-${year}`;
+                    } else {
+                        return '&nbsp;'; // Jika tidak valid, tampilkan spasi kosong
+                    }
+                }
                 rightAlignedContent += `<div style="position: absolute; top: 250px; left: 805px;">${(data.vessel_cust ? data.vessel_cust : '&nbsp;')}</div>`;
                 rightAlignedContent += `<div style="position: absolute; top: 280px; left: 805px;">${(data.next_port ? data.next_port : '&nbsp;')}</div>`;
                 rightAlignedContent += `<div style="position: absolute; top: 320px; left: 805px;">${(data.departure_time ? data.departure_time : '&nbsp;')}</div>`;
@@ -377,7 +389,8 @@ if (!isset($_SESSION["login"])) {
                 printWindow.document.write(content);
     
                 // Menambahkan QR code untuk verifikasi
-                const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_bdr.php?id_bdr=' + id_bdr;
+                // const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_bdr.php?id_bdr=' + id_bdr;
+                const qrCodeUrl = 'http://localhost/egppbunker/verify_bdr.php?id_bdr=' + id_bdr;
                 printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 70px; right: 20px;" />');
     
                 printWindow.document.write('</body></html>');

@@ -228,7 +228,8 @@ function printContent(id_do) {
             printWindow.document.write(content);
 
             // Menambahkan QR code untuk verifikasi
-            const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_document.php?id_do=' + id_do;
+            // const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_document.php?id_do=' + id_do;
+            const qrCodeUrl = 'http://localhost/egppbunker/verify_document.php?id_do=' + id_do;
             printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 140px; right: 20px;" />');
 
             printWindow.document.write('</body></html>');

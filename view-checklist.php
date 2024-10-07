@@ -127,7 +127,7 @@ if (!isset($_SESSION["login"])) {
                         </div>
 
                         <div class="text-left">
-                            <a href="#" class="btn btn-info btn-sm" onclick="printBDR(<?= $id_bdr?>);"><i class="fa fa-print fa-sm"></i> Print BDR</a>
+                            <a href="#" class="btn btn-info btn-sm" onclick="printChecklist(<?= $id_checklist?>);"><i class="fa fa-print fa-sm"></i> Print Checklist</a>
                             <a href="edit-checklist.php?id_checklist=<?= $id_checklist?>" class="btn btn-primary btn-sm"><i class="fa fa-edit fa-sm"></i> Edit</a>
                             <a href="#" class="btn btn-danger btn-sm" onclick="return confirmRemove(<?= $id_checklist?>);"><i class="fa fa-trash fa-sm"></i> Remove</a>
                             <script>
@@ -173,61 +173,25 @@ if (!isset($_SESSION["login"])) {
 ?>
 
 <script>
-    function printBDR(id_bdr) {
+    function printChecklist(id_checklist) {
         // Gunakan AJAX untuk mengambil data dari server
-        fetch('get_bdr.php?id_bdr=' + id_bdr)
+        fetch('get_checklist.php?id_checklist=' + id_checklist)
             .then(response => response.json())
             .then(data => {
                 let content = '';
     
-                // Format data.net_metric_ton untuk menampilkan pemisah ribuan
-                let formattedNetMetricTon = Number(data.net_metric_ton).toLocaleString('id-ID'); // Ubah 'id-ID' sesuai dengan lokal yang Anda butuhkan
-    
                 // Bagian yang digeser ke kanan
                 let rightAlignedContent = '';
-                // Ubah CSS bdr_no menjadi center
-                rightAlignedContent += `<div style="position: absolute; top: 155px; left: 50%; transform: translateX(-50%); font-weight: bold;">${data.bdr_no}</div>`;
-                // rightAlignedContent += `<div style="position: absolute; top: 220px; left: 805px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 220px; left: 805px;">${(data.do_date ? formatDate(data.do_date) : '&nbsp;')}</div>`;
-                function formatDate(dateString) {
-                    const date = new Date(dateString);
-                    if (!isNaN(date)) {
-                        const day = String(date.getDate()).padStart(2, '0');
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const year = date.getFullYear();
-                        return `${day}-${month}-${year}`;
-                    } else {
-                        return '&nbsp;'; // Jika tidak valid, tampilkan spasi kosong
-                    }
-                }
-                rightAlignedContent += `<div style="position: absolute; top: 250px; left: 805px;">${(data.vessel_cust ? data.vessel_cust : '&nbsp;')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 280px; left: 805px;">${(data.next_port ? data.next_port : '&nbsp;')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 320px; left: 805px;">${(data.departure_time ? data.departure_time : '&nbsp;')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 490px; left: 920px; text-align: right; width: 100px;">${data.quantity.toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 520px; left: 920px; text-align: right; width: 100px;">${(data.quantity / 1000).toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 550px; left: 920px; text-align: right; width: 100px;">${data.net_metric_ton.toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 615px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.vcf.toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 645px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.wcf.toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 675px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.temp.toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 705px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.table_52.toLocaleString('id-ID')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 735px; left: 920px; font-style:italic; color: blue; text-align: right; width: 100px;">${data.table_1.toLocaleString('id-ID')}</div>`;
 
-                rightAlignedContent += `<div style="position: absolute; top: 1035px; left: 805px;">${(data.vessel_cust ? data.vessel_cust : '&nbsp;')}</div>`;
-                rightAlignedContent += `<div style="position: absolute; top: 1068px; left: 805px;">${data.delivered_by}</div>`;
+                rightAlignedContent += `<div style="position: absolute; top: 118px; left: 470px;">${(data.date ? data.date : '&nbsp;')}</div>`;
+                rightAlignedContent += `<div style="position: fixed; top: 118px; left: 633px;">${(data.date ? data.time : '&nbsp;')}</div>`;
 
     
                 let leftAlignedContent = '';
-                leftAlignedContent += `<div style="position: absolute; top: 220px; left: 295px;">${data.discharging_port}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 250px; left: 295px;">${data.delivered_by}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 280px; left: 295px;">${data.product}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 320px; left: 295px;">${(data.commence_pump ? data.commence_pump : '&nbsp;')}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 365px; left: 295px;">${(data.finished_pump ? data.finished_pump : '&nbsp;')}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 500px; left: 395px;">${data.visc}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 560px; left: 395px;">${data.density}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 623px; left: 400px;">${data.flashpoint}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 683px; left: 395px;">${data.sulphur}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 747px; left: 395px;">${data.water_content}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 540px; left: 755px; width: 300px;">&nbsp;</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 119px; left: 175px;">${data.port_of_supply}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 135px; left: 175px;">${data.product}, ${data.quantity.toLocaleString('id-ID')} Liter</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 150px; left: 175px;">${data.sender}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 165px; left: 175px;">${data.receiver}</div>`;
 
     
                 content += rightAlignedContent + '<br>' + leftAlignedContent;
@@ -235,15 +199,10 @@ if (!isset($_SESSION["login"])) {
                 // Buka jendela cetak dan tampilkan teks dengan gaya
                 const printWindow = window.open('', '', 'height=800,width=1000');
                 printWindow.document.write('<html><head><style>');
-                printWindow.document.write('body { font-family: Arial Narrow, sans-serif; font-size:20px; line-height: 1.5; }'); // Pastikan font diatur untuk body
+                printWindow.document.write('body { font-family: Arial Narrow, sans-serif; font-size:14px; line-height: 1.5; }'); // Pastikan font diatur untuk body
                 printWindow.document.write('div { text-align: justify; }');
                 printWindow.document.write('</style></head><body>');
                 printWindow.document.write(content);
-    
-                // Menambahkan QR code untuk verifikasi
-                // const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_bdr.php?id_bdr=' + id_bdr;
-                const qrCodeUrl = 'http://localhost/egppbunker/verify_bdr.php?id_bdr=' + id_bdr;
-                printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 70px; right: 20px;" />');
     
                 printWindow.document.write('</body></html>');
                 printWindow.document.close();

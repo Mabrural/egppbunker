@@ -117,16 +117,20 @@ include "layouts/head-css.php";
                                   <?php endif; ?>
                                 </li>
                                 <li>
-                                  <?php if(!$checklistExists): ?>
-                                    <!-- Jika tidak ada data di tabel bunker_checklist, tampilkan tombol Checklist -->
-                                    <a class="dropdown-item" href="tambah-checklist.php?id_do=<?= $data['id_do'] ?>"><i class="fa fa-clipboard-check fa-sm"></i> Checklist</a>
+                                  <?php if($bdrExists): ?>
+                                    <?php if(!$checklistExists): ?>
+                                      <!-- Jika tidak ada data di tabel bunker_checklist, tampilkan tombol Checklist -->
+                                      <a class="dropdown-item" href="tambah-checklist.php?id_do=<?= $data['id_do'] ?>"><i class="fa fa-clipboard-check fa-sm"></i> Checklist</a>
+                                    <?php else: ?>
+                                      <!-- Jika ada data di tabel bdr, tampilkan tombol View checklist -->
+                                      <a class="dropdown-item" href="view-checklist.php?id_checklist=<?= $data['id_checklist'] ?>"><i class="fa fa-eye fa-sm"></i> View Checklist</a>
+                                    <?php endif; ?>
                                   <?php else: ?>
-                                    <!-- Jika ada data di tabel bdr, tampilkan tombol View checklist -->
-                                    <a class="dropdown-item" href="view-checklist.php?id_checklist=<?= $data['id_checklist'] ?>"><i class="fa fa-eye fa-sm"></i> View Checklist</a>
+
                                   <?php endif; ?>
                                 </li>
                                 <li>
-                                  <a class="dropdown-item" href="tambah-sample.php?id_do=<?= $data['id_do'] ?>"><i class="fa fa-box-open fa-sm"></i> Samp. Receive</a>
+                                  <!-- <a class="dropdown-item" href="tambah-sample.php?id_do=<?= $data['id_do'] ?>"><i class="fa fa-box-open fa-sm"></i> Samp. Receive</a> -->
                                 </li>
                               </ul>
                             </div>

@@ -62,7 +62,7 @@ if($_SESSION['is_admin'] != true){
               <h5 class="card-title">Manage Users</h5>
                 <div class="table-responsive">
                     <!-- Table with stripped rows -->
-                    <table class="table datatable">
+                    <table class="table datatable table table-hover">
                       <thead>
                         <tr>
                           <th>No</th>

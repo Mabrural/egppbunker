@@ -56,7 +56,7 @@ if (!isset($_SESSION["login"])) {
               <h5 class="card-title">Customers</h5>
                 <div class="table-responsive">
                     <!-- Table with stripped rows -->
-                    <table class="table datatable">
+                    <table class="table datatable table table-hover">
                       <thead>
                         <tr>
                           <th>No</th>

@@ -551,6 +551,60 @@ function removeBdr($id_bdr) {
 
 }
 
+function tambahChecklist($data) {
+	global $koneksi;
+	$do_id = mysqli_real_escape_string($koneksi, $data['do_id']);
+	$port_of_supply = mysqli_real_escape_string($koneksi, $data['port_of_supply']);
+	$type_of_fuel = mysqli_real_escape_string($koneksi, $data['type_of_fuel']);
+	$quantity = mysqli_real_escape_string($koneksi, $data['quantity_checklist']);
+	$sender = mysqli_real_escape_string($koneksi, $data['sender']);
+	$receiver = mysqli_real_escape_string($koneksi, $data['receiver']);
+	$date = mysqli_real_escape_string($koneksi, $data['date']);
+	$time = mysqli_real_escape_string($koneksi, $data['time']);
+
+	$query = "INSERT INTO bunker_checklist VALUES
+			('', '$do_id', '$port_of_supply', '$type_of_fuel', '$quantity', '$sender', '$receiver', '$date', '$time')";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function editChecklist($data) {
+	global $koneksi;
+	$id_checklist = mysqli_real_escape_string($koneksi, $data['id_checklist']);
+	$do_id = mysqli_real_escape_string($koneksi, $data['do_id']);
+	$port_of_supply = mysqli_real_escape_string($koneksi, $data['port_of_supply']);
+	$type_of_fuel = mysqli_real_escape_string($koneksi, $data['type_of_fuel']);
+	$quantity = mysqli_real_escape_string($koneksi, $data['quantity_checklist']);
+	$sender = mysqli_real_escape_string($koneksi, $data['sender']);
+	$receiver = mysqli_real_escape_string($koneksi, $data['receiver']);
+	$date = mysqli_real_escape_string($koneksi, $data['date']);
+	$time = mysqli_real_escape_string($koneksi, $data['time']);
+
+	$query = "UPDATE bunker_checklist SET
+				do_id = '$do_id',
+				port_of_supply = '$port_of_supply',
+				type_of_fuel = '$type_of_fuel',
+				quantity_checklist = '$quantity',
+				sender = '$sender',
+				receiver = '$receiver',
+				date = '$date',
+				time = '$time'
+			  WHERE id_checklist = $id_checklist
+			";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function removeChecklist($id_checklist) {
+	global $koneksi;
+	mysqli_query($koneksi, "DELETE FROM bunker_checklist WHERE id_checklist=$id_checklist");
+
+	return mysqli_affected_rows($koneksi);
+
+}
+
 function tambahCompany($data) {
 	global $koneksi;
 	$company_name = htmlspecialchars($data["company_name"]);

@@ -362,7 +362,7 @@ if (!isset($_SESSION["login"])) {
                 leftAlignedContent += `<div style="position: absolute; top: 560px; left: 395px;">${data.density}</div>`;
                 leftAlignedContent += `<div style="position: absolute; top: 623px; left: 400px;">${data.flashpoint}</div>`;
                 leftAlignedContent += `<div style="position: absolute; top: 683px; left: 395px;">${data.sulphur}</div>`;
-                leftAlignedContent += `<div style="position: absolute; top: 747px; left: 385px;">${data.water_content}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 747px; left: 395px;">${data.water_content}</div>`;
                 leftAlignedContent += `<div style="position: absolute; top: 540px; left: 755px; width: 300px;">&nbsp;</div>`;
 
     
@@ -377,7 +377,7 @@ if (!isset($_SESSION["login"])) {
                 printWindow.document.write(content);
     
                 // Menambahkan QR code untuk verifikasi
-                const qrCodeUrl = 'http://localhost/egppbunker/verify_bdr.php?id_bdr=' + id_bdr;
+                const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_bdr.php?id_bdr=' + id_bdr;
                 printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 70px; right: 20px;" />');
     
                 printWindow.document.write('</body></html>');

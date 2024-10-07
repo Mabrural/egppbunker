@@ -176,7 +176,20 @@ function printContent(id_do) {
             let rightAlignedContent = '';
             rightAlignedContent += `<div style="position: absolute; top: 30px; left: 755px;">${(data.po_number ? data.po_number : '&nbsp;')}</div>`;
             rightAlignedContent += `<div style="position: absolute; top: 95px; left: 755px;">${data.do_number}</div>`;
-            rightAlignedContent += `<div style="position: absolute; top: 158px; left: 755px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
+            // rightAlignedContent += `<div style="position: absolute; top: 158px; left: 755px;">${(data.do_date ? data.do_date : '&nbsp;')}</div>`;
+            rightAlignedContent += `<div style="position: absolute; top: 158px; left: 755px;">${(data.do_date ? formatDate(data.do_date) : '&nbsp;')}</div>`;
+            
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                if (!isNaN(date)) {
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                } else {
+                    return '&nbsp;'; // Jika tidak valid, tampilkan spasi kosong
+                }
+            }
 
             // Menggunakan CSS untuk menangani pemisahan alamat berdasarkan lebar
             let leftAlignedContent = '';
@@ -215,7 +228,7 @@ function printContent(id_do) {
             printWindow.document.write(content);
 
             // Menambahkan QR code untuk verifikasi
-            const qrCodeUrl = 'http://localhost/egppbunker/verify_document.php?id_do=' + id_do;
+            const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_document.php?id_do=' + id_do;
             printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 140px; right: 20px;" />');
 
             printWindow.document.write('</body></html>');

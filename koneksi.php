@@ -605,6 +605,48 @@ function removeChecklist($id_checklist) {
 
 }
 
+function tambahSample($data) {
+	global $koneksi;
+	$do_id = mysqli_real_escape_string($koneksi, $data['do_id']);
+	$truck_or_vessel = mysqli_real_escape_string($koneksi, $data['truck_or_vessel']);
+	$cargo = mysqli_real_escape_string($koneksi, $data['cargo']);
+	$port = mysqli_real_escape_string($koneksi, $data['port']);
+
+	$query = "INSERT INTO sample_receipt VALUES
+			('', '$do_id', '$truck_or_vessel', '$cargo', '$port')";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function editSample($data) {
+	global $koneksi;
+	$id_sample = mysqli_real_escape_string($koneksi, $data['id_sample']);
+	$do_id = mysqli_real_escape_string($koneksi, $data['do_id']);
+	$truck_or_vessel = mysqli_real_escape_string($koneksi, $data['truck_or_vessel']);
+	$cargo = mysqli_real_escape_string($koneksi, $data['cargo']);
+	$port = mysqli_real_escape_string($koneksi, $data['port']);
+
+	$query = "UPDATE sample_receipt SET
+				do_id = '$do_id',
+				truck_or_vessel = '$truck_or_vessel',
+				cargo = '$cargo',
+				port = '$port'
+			  WHERE id_sample = $id_sample
+			";
+	mysqli_query($koneksi, $query);
+
+	return mysqli_affected_rows($koneksi);
+}
+
+function removeSample($id_sample) {
+	global $koneksi;
+	mysqli_query($koneksi, "DELETE FROM sample_receipt WHERE id_sample=$id_sample");
+
+	return mysqli_affected_rows($koneksi);
+
+}
+
 function tambahCompany($data) {
 	global $koneksi;
 	$company_name = htmlspecialchars($data["company_name"]);

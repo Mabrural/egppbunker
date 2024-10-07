@@ -72,7 +72,7 @@ include "layouts/head-css.php";
                   <tbody>
                     <?php
                     $no = 1;
-                    $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id LEFT JOIN bdr ON bdr.do_id=delivery_order.id_do LEFT JOIN bunker_checklist ON bunker_checklist.do_id=delivery_order.id_do ORDER BY id_do DESC";
+                    $query = "SELECT * FROM delivery_order JOIN customer ON customer.id_customer=delivery_order.customer_id LEFT JOIN bdr ON bdr.do_id=delivery_order.id_do LEFT JOIN bunker_checklist ON bunker_checklist.do_id=delivery_order.id_do LEFT JOIN sample_receipt ON sample_receipt.do_id=delivery_order.id_do ORDER BY id_do DESC";
                     $tampil = mysqli_query($koneksi, $query);
 
                     if (mysqli_num_rows($tampil) > 0) {
@@ -87,6 +87,10 @@ include "layouts/head-css.php";
                         // Cek apakah ada data di tabel bunker_checklist dengan do_id yang sama dengan id_do
                         $checklistExists = mysqli_query($koneksi, "SELECT COUNT(*) as count FROM bunker_checklist WHERE do_id = $id_do");
                         $checklistExists = mysqli_fetch_assoc($checklistExists)['count'] > 0;
+
+                        // Cek apakah ada data di tabel sample_receipt dengan do_id yang sama dengan id_do
+                        $sampleExists = mysqli_query($koneksi, "SELECT COUNT(*) as count FROM sample_receipt WHERE do_id = $id_do");
+                        $sampleExists = mysqli_fetch_assoc($sampleExists)['count'] > 0;
 
                     ?>
                         <tr>
@@ -130,7 +134,15 @@ include "layouts/head-css.php";
                                   <?php endif; ?>
                                 </li>
                                 <li>
-                                  <!-- <a class="dropdown-item" href="tambah-sample.php?id_do=<?= $data['id_do'] ?>"><i class="fa fa-box-open fa-sm"></i> Samp. Receive</a> -->
+                                  <?php if($bdrExists): ?>
+                                    <?php if(!$sampleExists): ?>
+                                      <a class="dropdown-item" href="tambah-sample.php?id_do=<?= $data['id_do'] ?>"><i class="fa fa-list-alt fa-sm"></i> Samp. Receive</a>
+                                    <?php else: ?>
+                                      <a class="dropdown-item" href="view-sample.php?id_sample=<?= $data['id_sample'] ?>"><i class="fa fa-eye fa-sm"></i> View Samp. Receipt</a
+                                    <?php endif; ?>
+                                  <?php else: ?>
+
+                                  <?php endif; ?>
                                 </li>
                               </ul>
                             </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 07, 2024 at 12:46 PM
+-- Generation Time: Oct 08, 2024 at 06:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -52,8 +52,7 @@ CREATE TABLE `bdr` (
 --
 
 INSERT INTO `bdr` (`id_bdr`, `do_id`, `bdr_no`, `delivered_by`, `vessel_cust`, `next_port`, `visc`, `density`, `flashpoint`, `sulphur`, `water_content`, `net_metric_ton`, `vcf`, `wcf`, `temp`, `table_52`, `table_1`) VALUES
-(43, 28, '007/BDR-GPP/IX/2024', 'By Bunker Service', 'Lanpan 16', '', '4,200', '857.8', '84.0', '0.080', '200.3', '25.437', '0.9891', '0.8479', '30', '6.293', '0.98421'),
-(50, 38, '008/BDR-GPP/X/2024', 'By Bunker Service', 'Tiga permata', '', '3.264', '0.849', '75.0', '0.005', '<0.0005', '8.479', '0.9891', '0.8479', '30.0', '6.293', '0.98421');
+(43, 28, '007/BDR-GPP/IX/2024', 'By Bunker Service', 'Lanpan 16', '', '4,200', '857.8', '84.0', '0.080', '200.3', '25.437', '0.9891', '0.8479', '30', '6.293', '0.98421');
 
 -- --------------------------------------------------------
 
@@ -72,13 +71,6 @@ CREATE TABLE `bunker_checklist` (
   `date` varchar(50) DEFAULT NULL,
   `time` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `bunker_checklist`
---
-
-INSERT INTO `bunker_checklist` (`id_checklist`, `do_id`, `port_of_supply`, `type_of_fuel`, `quantity_checklist`, `sender`, `receiver`, `date`, `time`) VALUES
-(11, 38, 'Dumai', 'Biosolar', 10000, 'By Bunker Service', 'Tiga permata', '', '');
 
 -- --------------------------------------------------------
 
@@ -144,7 +136,8 @@ INSERT INTO `delivery_order` (`id_do`, `po_number`, `do_number`, `do_date`, `cus
 (29, 'PO 053/USI/GPP001/09/24', '030/DO-GPP/X/2024', '2024-09-26', 11, 'Biosolar', 'KN Pulau Nipah 321', 70000, '', '', '', 'Depo Pertamina', 'Dermaga Jakarta', '', '', '', ''),
 (30, 'PO 056/USI/GPP001/09/24', '031/DO-GPP/X/2024', '2024-09-26', 11, 'Biosolar', 'KN Belut Laut 406', 14000, '', '', '', 'Depo Pertamina', 'Dermaga Sekupang', '', '', '', ''),
 (31, 'PO 057/USI/GPP001/09/24', '032/DO-GPP/X/2024', '2024-09-28', 11, 'Biosolar', 'KN Pulau Dana 323', 100000, '', '', '', 'Depo Pertamina', 'Dermaga Jakarta', '', '', '', ''),
-(38, '280/PO/LAE/24', '033/DO-GPP/X/2024', NULL, 1, 'Biosolar', 'By Bunker Service', 10000, '', '', '', 'Batam', 'Dumai', '', '', '', '');
+(39, 'PO 013/USI/GPP001/10/24', '033/DO-GPP/X/2024', '2024-10-03', 11, 'Biosolar', 'Truck', 128000, '', '', '', 'Batam', 'Batu Ampar', '', '', '', ''),
+(40, '301/PO/LAE/24', '034/DO-GPP/X/2024', NULL, 10, 'Biosolar', 'Truck', 1000, '', '', '', 'Batam', 'Tanjung Uncang', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -159,13 +152,6 @@ CREATE TABLE `sample_receipt` (
   `cargo` varchar(100) NOT NULL,
   `port` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sample_receipt`
---
-
-INSERT INTO `sample_receipt` (`id_sample`, `do_id`, `truck_or_vessel`, `cargo`, `port`) VALUES
-(7, 38, 'By Bunker Service', 'Biosolar', 'Dumai');
 
 -- --------------------------------------------------------
 
@@ -246,7 +232,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bdr`
 --
 ALTER TABLE `bdr`
-  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id_bdr` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `bunker_checklist`
@@ -264,13 +250,13 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id_do` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `sample_receipt`
 --
 ALTER TABLE `sample_receipt`
-  MODIFY `id_sample` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_sample` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`

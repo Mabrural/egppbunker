@@ -177,7 +177,7 @@ if (!isset($_SESSION["login"])) {
                             <div class="col-lg-4 col-md-4 col-sm-12">
                                 <div class="mb-2">
                                     <label for="delivered_by" class="form-label">Delivered by </label>
-                                    <input type="text" class="form-control" name="delivered_by" id="delivered_by" >
+                                    <input type="text" class="form-control" name="delivered_by" id="delivered_by" value="<?= $delivery['armada']?>">
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">

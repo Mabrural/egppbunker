@@ -97,7 +97,7 @@ include "layouts/head-css.php";
                                 </div>
 
                                 <div class="text-left">
-                                    <a href="#" class="btn btn-info btn-sm" onclick="printChecklist(<?= $id_checklist ?>);"><i class="fa fa-print fa-sm"></i> Print Checklist</a>
+                                    <a href="#" class="btn btn-info btn-sm" onclick="printSample(<?= $id_sample ?>);"><i class="fa fa-print fa-sm"></i> Print Sample</a>
                                     <a href="edit-sample.php?id_sample=<?= $id_sample ?>" class="btn btn-primary btn-sm"><i class="fa fa-edit fa-sm"></i> Edit</a>
                                     <a href="#" class="btn btn-danger btn-sm" onclick="return confirmRemove(<?= $id_sample ?>);"><i class="fa fa-trash fa-sm"></i> Remove</a>
                                     <script>
@@ -142,45 +142,49 @@ include "layouts/head-css.php";
     include "layouts/script-js.php";
     ?>
 
-    <script>
-        function printChecklist(id_checklist) {
-            // Gunakan AJAX untuk mengambil data dari server
-            fetch('get_checklist.php?id_checklist=' + id_checklist)
-                .then(response => response.json())
-                .then(data => {
-                    let content = '';
+<script>
+    function printSample(id_sample) {
+        // Gunakan fetch untuk mengambil data dari server
+        fetch('get_sample.php?id_sample=' + id_sample)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch sample data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let content = '';
 
-                    // Bagian yang digeser ke kanan
-                    let rightAlignedContent = '';
+                // Bagian yang digeser ke kanan
+                let rightAlignedContent = '';
 
-                    rightAlignedContent += `<div style="position: absolute; top: 118px; left: 470px;">${(data.date ? data.date : '&nbsp;')}</div>`;
-                    rightAlignedContent += `<div style="position: fixed; top: 118px; left: 633px;">${(data.date ? data.time : '&nbsp;')}</div>`;
+                // Bagian yang digeser ke kiri
+                let leftAlignedContent = '';
+                leftAlignedContent += `<div style="position: absolute; top: 80px; left: 220px;">${data.truck_or_vessel}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 97px; left: 220px;">${data.cargo}</div>`;
+                leftAlignedContent += `<div style="position: absolute; top: 114px; left: 220px;">${data.port}</div>`;
 
+                content += rightAlignedContent + '<br>' + leftAlignedContent;
 
-                    let leftAlignedContent = '';
-                    leftAlignedContent += `<div style="position: absolute; top: 119px; left: 175px;">${data.port_of_supply}</div>`;
-                    leftAlignedContent += `<div style="position: absolute; top: 135px; left: 175px;">${data.product}, ${data.quantity.toLocaleString('id-ID')} Liter</div>`;
-                    leftAlignedContent += `<div style="position: absolute; top: 150px; left: 175px;">${data.sender}</div>`;
-                    leftAlignedContent += `<div style="position: absolute; top: 165px; left: 175px;">${data.receiver}</div>`;
+                // Membuka jendela cetak dan menampilkan teks dengan gaya yang diatur
+                const printWindow = window.open('', '', 'height=800,width=1000');
+                printWindow.document.write('<html><head><style>');
+                printWindow.document.write('body { font-family: Arial Narrow, sans-serif; font-size:14px; line-height: 1.5; }'); // Pastikan font diatur untuk body
+                printWindow.document.write('div { text-align: justify; }');
+                printWindow.document.write('</style></head><body>');
+                printWindow.document.write(content);
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.focus(); // Pastikan window mendapatkan fokus sebelum mencetak
+                printWindow.print();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load sample data. Please try again.');
+            });
+    }
+</script>
 
-
-                    content += rightAlignedContent + '<br>' + leftAlignedContent;
-
-                    // Buka jendela cetak dan tampilkan teks dengan gaya
-                    const printWindow = window.open('', '', 'height=800,width=1000');
-                    printWindow.document.write('<html><head><style>');
-                    printWindow.document.write('body { font-family: Arial Narrow, sans-serif; font-size:14px; line-height: 1.5; }'); // Pastikan font diatur untuk body
-                    printWindow.document.write('div { text-align: justify; }');
-                    printWindow.document.write('</style></head><body>');
-                    printWindow.document.write(content);
-
-                    printWindow.document.write('</body></html>');
-                    printWindow.document.close();
-                    printWindow.print();
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
 
 
 

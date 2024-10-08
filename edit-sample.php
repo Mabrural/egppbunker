@@ -172,7 +172,7 @@ if (!isset($_SESSION["login"])) {
 
                         <div class="text-left">
                         <button type="submit" class="btn btn-primary btn-sm" name="editSample"><i class="fa fa-file-invoice fa-sm"></i> Update</button>
-                        <a href="manage-delivery-order.php" class="btn btn-danger btn-sm"><i class="fa fa-times fa-sm"></i> Cancel</a>
+                        <a href="view-sample.php?id_sample=<?= $id_sample?>" class="btn btn-danger btn-sm"><i class="fa fa-times fa-sm"></i> Cancel</a>
                         </div>
                     </form><!-- End Horizontal Form -->
         

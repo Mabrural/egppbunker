@@ -389,8 +389,8 @@ if (!isset($_SESSION["login"])) {
                 printWindow.document.write(content);
     
                 // Menambahkan QR code untuk verifikasi
-                // const qrCodeUrl = 'https://e-bunker.mitramaritim.com/verify_bdr.php?id_bdr=' + id_bdr;
-                const qrCodeUrl = 'http://localhost/egppbunker/verify_bdr.php?id_bdr=' + id_bdr;
+                 const qrCodeUrl = 'https://e-bunker.globalpetro.co.id/verify_bdr.php?id_bdr=' + id_bdr;
+                // const qrCodeUrl = 'http://localhost/egppbunker/verify_bdr.php?id_bdr=' + id_bdr;
                 printWindow.document.write('<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' + encodeURIComponent(qrCodeUrl) + '" style="position: fixed; bottom: 70px; right: 20px;" />');
     
                 printWindow.document.write('</body></html>');

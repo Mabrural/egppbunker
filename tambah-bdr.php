@@ -391,27 +391,27 @@ if (!isset($_SESSION["login"])) {
                                 <b>Fuel Characteristic</b>/<i>Karakteristik bahan bakar</i>
                                 <div class="mb-2">
                                     <label for="visc" class="form-label">Visc. cSt @40&deg;C <br/><i>(ASTM D445/ISO 3104)</i> <span id="x">*</span></label>
-                                    <input type="text" name="visc" id="visc" value="3.264" class="form-control">
+                                    <input type="text" name="visc" id="visc" value="4.200" class="form-control">
                                 </div>
                             
                                 <div class="mb-2">
                                     <label for="density" class="form-label">Density @ 15&deg;C <br/><i>(ASTM D1298-D4052)</i> <span id="x">*</span></label>
-                                    <input type="text" id="density" name="density" class="form-control" value="0.849" required>
+                                    <input type="text" id="density" name="density" class="form-control" value="857.8" required>
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="flashpoint" class="form-label">Flashpoint &deg;C <br/><i>(ASTM D93)</i> <span id="x">*</span></label>
-                                    <input type="text" id="flashpoint" name="flashpoint" class="form-control" value="75.0" required>
+                                    <input type="text" id="flashpoint" name="flashpoint" class="form-control" value="84.0" required>
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="sulphur" class="form-label">Sulphur wt% <br/><i>(ASTM D2622/D4294/D5453)</i> <span id="x">*</span></label>
-                                    <input type="text" id="sulphur" name="sulphur" class="form-control" value="0.005" required>
+                                    <input type="text" id="sulphur" name="sulphur" class="form-control" value="0.080" required>
                                 </div>
 
                                 <div class="mb-2">
                                     <label for="water_content" class="form-label">Water Content % Vol. <br/><i>(ASTM D6304/ISO 3733:1999)</i> <span id="x">*</span></label>
-                                    <input type="text" id="water_content" name="water_content" class="form-control" value="<0.0005" required>
+                                    <input type="text" id="water_content" name="water_content" class="form-control" value="200.3" required>
                                 </div>
                             </div>
                             
